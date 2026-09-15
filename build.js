@@ -44,13 +44,17 @@ if (islands.length) {
     build: {
       outDir: 'dist/i', emptyOutDir: true, target: 'es2023', sourcemap: !!process.env.ANALYZE, modulePreload: { polyfill: false },
       minify: 'terser',
-      terserOptions: { compress: { passes: 3, unsafe: true, pure_getters: true, toplevel: true, module: true, drop_console: true }, mangle: { toplevel: true }, format: { comments: false } },
+      // ecma:2020 lets terser emit optional chaining and arrow shorthands (−36 B); compact drops the
+      // whitespace between modules (−8 B). Measured 2026-09-15 and rejected as worth 0 B on this graph:
+      // generatedCode:'es2015', hoistTransitiveImports:false, experimentalMinChunkSize, terser passes>3,
+      // sideEffects:false on svelte, and rollup's unsafe treeshake flags.
+      terserOptions: { compress: { passes: 3, ecma: 2020, unsafe: true, pure_getters: true, toplevel: true, module: true, drop_console: true }, mangle: { toplevel: true, safari10: false }, format: { comments: false, ecma: 2020 } },
       rollupOptions: {
         // app builds default to preserveEntrySignatures:false, which tree-shakes an island's exported
         // mount function away entirely — the first build of this came out as 201 B of nothing.
         preserveEntrySignatures: 'strict',
         input: islands.map(f => resolve(f)),
-        output: { entryFileNames: '[name].js', chunkFileNames: 'c-[hash].js' },
+        output: { entryFileNames: '[name].js', chunkFileNames: 'c-[hash].js', compact: true },
       },
     },
   });

@@ -423,6 +423,29 @@ Also worth knowing: curl sends no `Accept-Encoding` by default, so it measures i
 comparison I ran that way looked like a contradiction until I noticed curl was fetching 11,116 B where Chrome
 fetched 4,348 B of the same URL.
 
+### Is the Svelte 5 build at its floor? (2026-09-15)
+
+Re-checked every output option the build did not already set, on the real island graph:
+
+| lever | worth |
+| :-- | --: |
+| terser `ecma: 2020` (optional chaining, arrow shorthands) | **−36 B** |
+| `output.compact` (no whitespace between modules) | **−8 B** |
+| `output.generatedCode: 'es2015'` | 0 B |
+| `output.hoistTransitiveImports: false` | 0 B |
+| `experimentalMinChunkSize: 8000` | 0 B |
+| terser `passes: 8` instead of 3 | 0 B |
+
+Both non-zero levers are now applied: the shared chunk is 9,881 B and the tier totals 13,723 B. Together with
+the earlier findings — `sideEffects: false` worth 0 B, rollup's unsafe treeshake flags worth 0 B, and the two
+stubs declined for silent-failure risk — the build is at its floor. What is left is the signal engine itself.
+
+**Chunking is deliberately *not* maximal.** Merging the two Svelte islands into one entry is smaller in total
+— 12,830 B against 13,764 B, and one request fewer — but it deletes the shared chunk, so nothing is eagerly
+preloaded and the first gesture on either demo pulls **11,494 B** instead of 2,175 B. Splitting costs 934 B to
+move 9.9 KB into the first flight, off the interaction path. Total bytes is the wrong metric to maximise here;
+bytes-before-interaction is the right one.
+
 ### Deployment
 
 `deploy.js` publishes the design site to **https://decouple.co/design/**:
