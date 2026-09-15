@@ -42,7 +42,11 @@ if (islands.length) {
     root: process.cwd(), logLevel: 'error', configFile: false,
     plugins: [...analyze, svelte({ compilerOptions: { discloseVersion: false, runes: true, css: 'injected' } })],
     build: {
-      outDir: 'dist/i', emptyOutDir: true, target: 'es2023', sourcemap: !!process.env.ANALYZE, modulePreload: { polyfill: false },
+      // es2021, not es2023 — measured 2026-09-15, and it is smaller AND more compatible. Logical assignment
+      // (??=, ES2021) is what pays: 9 occurrences in the chunk. Past that, es2022 leaves Svelte's 28 private
+      // class fields untransformed, which costs 26 B; es2020 loses ??= for 23 B; es2019 loses ?. and ?? for
+      // 303 B. Support floor drops from Safari 16.4 (Mar 2023) to Safari 14 / Chrome 85 (2020).
+      outDir: 'dist/i', emptyOutDir: true, target: 'es2021', sourcemap: !!process.env.ANALYZE, modulePreload: { polyfill: false },
       minify: 'terser',
       // ecma:2020 lets terser emit optional chaining and arrow shorthands (−36 B); compact drops the
       // whitespace between modules (−8 B). Measured 2026-09-15 and rejected as worth 0 B on this graph:

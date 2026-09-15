@@ -446,6 +446,34 @@ preloaded and the first gesture on either demo pulls **11,494 B** instead of 2,1
 move 9.9 KB into the first flight, off the interaction path. Total bytes is the wrong metric to maximise here;
 bytes-before-interaction is the right one.
 
+### Which ES level to ship (2026-09-15)
+
+The target governs what the bundler may leave un-downleveled, so it is a size decision as much as a
+compatibility one. Measured across the real island graph:
+
+| build.target | tier total | what survives in the chunk |
+| :-- | --: | :-- |
+| es2019 | 14,023 B | nothing — `?.` and `??` are transformed away |
+| es2020 | 13,720 B | `?.`×39, `??`×16 |
+| **es2021** | **13,697 B** | `?.`×39, `??`×8, **`??=`×8** |
+| es2022 | 13,723 B | the above, plus 28 untransformed private class fields |
+| es2023 | 13,723 B | identical to es2022 |
+
+**es2021 is both the smallest and the most compatible**, so it is what the build now targets. Logical
+assignment (`??=`, ES2021) is the only feature of that year that matters to us — it collapses `x = x ?? y`,
+nine times in the chunk. Going further *costs* 26 B, because Svelte's runtime ships private class fields that
+esbuild downlevels into something that compresses better. Dropping to es2020 costs 23 B; es2019 costs 303 B.
+
+The support floor moves from Safari 16.4 (March 2023) to **Safari 14 / Chrome 85 / Firefox 79 — all 2020**.
+
+ES2021's library additions are irrelevant here: `Promise.any`, `WeakRef` and `String.replaceAll` appear
+nowhere in the graph, and no ES2022+ API (`.at`, `Object.hasOwn`, `toSorted`) does either. terser's `ecma`
+knob makes no difference above 2020, and P0 is unaffected at any level — its inlined JS contains no `?.` or
+`??` at all.
+
+`gates/syntax.js` now enforces this rather than asserting it: it fails on ES2022+ syntax or APIs as well as on
+any CommonJS marker. Verified live — bumping the target to es2022 turns it red on the private class fields.
+
 ### Deployment
 
 `deploy.js` publishes the design site to **https://decouple.co/design/**:

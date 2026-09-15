@@ -262,9 +262,13 @@ size      brotli(index.html) ≤ 9,216 B · every chunk ≤ 12,288 B     gates/s
 contrast  every (fg, surface) pair in every theme ≥ 4.5:1            gates/contrast.js  (40 pairs, parsed from the shipped CSS)
 palette   no hex/rgb/hsl literals outside @layer theme                gates/palette.js   (+ ≤ 1 [data-p] per source)
 motion    no transition/animation > 180ms; reduced-motion block       gates/motion.js
-syntax    ES2023 ESM only: no ES2024+ API/syntax, no CommonJS marker  gates/syntax.js
+syntax    ES2021 ESM only: no ES2022+ API/syntax, no CommonJS marker  gates/syntax.js
 layout    CLS = 0 after every island adopts · ≤ 1 [data-p] rendered   gates/layout.js    (headless Chrome over CDP)
 ```
+
+ES2021 is a measured choice, not a conservative one: it is the *smallest* target for this graph as well as the
+most widely supported. `??=` (ES2021) collapses `x = x ?? y` nine times in the runtime chunk, while es2022+
+leaves 28 private class fields untransformed and costs 26 B. Floor: Safari 14 / Chrome 85 / Firefox 79.
 
 The layout gate drives system Chrome over the DevTools protocol (Bun's own WebSocket, no npm dependency) and
 asserts every lazy island was really fetched before trusting the zero. *(Measured 2026-09-14: `--dump-dom` alone
