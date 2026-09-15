@@ -1,0 +1,540 @@
+<!doctype html><html lang=en data-t=base><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>μi — design language</title>
+<style>
+@layer reset,theme,base,comp,chart,page;
+@layer reset{*,:before,:after{box-sizing:border-box;margin:0}html{-webkit-text-size-adjust:100%}body{min-height:100svh}img,svg{display:block;max-width:100%}button,input,select,textarea{font:inherit;color:inherit;background:none;border:0}button{cursor:pointer}:where(a){color:inherit}table{border-collapse:collapse;width:100%}dialog{color:inherit}[hidden]{display:none!important}}
+@layer theme{
+:root{color-scheme:light;
+--n0:light-dark(#ffffff,#15161a);--n1:light-dark(#f7f6f4,#0b0c0f);--n2:light-dark(#efedea,#1d1f24);--n3:light-dark(#e2dfda,#2a2d33);--n4:light-dark(#c9c5bd,#3e424a);
+--fg:light-dark(#171614,#e9e8e4);--fg2:light-dark(#4b4843,#b3b0aa);--fg3:light-dark(#6d6961,#8d8a83);
+--ac:light-dark(#44618f,#7d9bc9);--on-ac:light-dark(#ffffff,#0d1016);--ac-s:light-dark(#eef1f6,#1a2231);--ac-b:light-dark(#c3cede,#31415c);--ac-r:light-dark(#dde4ee,#232e42);--ac-f:light-dark(#39547e,#a8c0e4);
+--ok-s:light-dark(#edf3ee,#152219);--ok-b:light-dark(#bcd6c2,#2c4636);--ok-f:light-dark(#3f6b4e,#8fc4a2);
+--wa-s:light-dark(#f8f2e8,#241c10);--wa-b:light-dark(#e4d3ad,#4a3a1e);--wa-f:light-dark(#7d5c28,#d8b877);
+--no-s:light-dark(#f8eeec,#241413);--no-b:light-dark(#e2c4bf,#4d2a26);--no-f:light-dark(#8f4038,#e0a098);
+--c1:light-dark(#2563eb,#3b82f6);--c2:light-dark(#0d9488,#0e9384);--c3:light-dark(#7c3aed,#8b5cf6);
+--r1:.5rem;--r2:.75rem;--r3:1rem;--r4:1.5rem;--rf:9999px;
+--sh:0 1px 2px light-dark(#0f172a14,#00000066);--hi:light-dark(transparent,#ffffff0d);
+--ff:ui-sans-serif,system-ui,-apple-system,"Segoe UI Variable Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--fm:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Cascadia Mono","Liberation Mono",monospace;--fs:1rem;--lh:1.6;--sp:1.5;--cell:.625rem}
+:root:where([data-t=dark]){color-scheme:dark}
+:root:where([data-t=sharp],[data-t=sharp-dark]){--fs:.875rem;--lh:1.4;--sp:1;--r3:.75rem;--r4:1rem;--cell:.375rem;font-variant-numeric:tabular-nums lining-nums;letter-spacing:-.01em}
+:root:where([data-t=sharp-dark]){color-scheme:dark}
+}
+@layer base{
+body{font:var(--fs)/var(--lh) var(--ff);color:var(--fg);background:var(--n1);-webkit-font-smoothing:antialiased}
+:root:where([data-t=dark],[data-t=sharp-dark]) body{background-color:var(--n1);background-image:repeating-linear-gradient(45deg,#ffffff05 0 1px,transparent 1px 4px),repeating-linear-gradient(135deg,#00000040 0 1px,transparent 1px 4px);background-attachment:local}
+h1,h2,h3,h4{line-height:1.2;letter-spacing:-.03em;font-weight:700}h1{font-size:calc(var(--fs)*2.25)}h2{font-size:calc(var(--fs)*1.5)}h3{font-size:calc(var(--fs)*1.125)}h4{font-size:var(--fs)}
+p,li{max-width:64ch}code,.mono,[data-mono]{font-family:var(--fm);font-variant-numeric:tabular-nums;font-size:.9em}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums lining-nums}
+@media(prefers-reduced-motion:reduce){*,:before,:after{transition:none!important;animation:none!important}}
+}
+@layer comp{
+.stack{display:flex;flex-direction:column;gap:calc(.5rem*var(--sp))}.row{display:flex;align-items:center;gap:calc(.5rem*var(--sp))}.wrap{flex-wrap:wrap}.between{justify-content:space-between}.grow{flex:1}
+.grid{display:grid;gap:calc(1rem*var(--sp));grid-template-columns:1fr}@media(min-width:60rem){.grid-2{grid-template-columns:1fr 1fr}.grid-3{grid-template-columns:repeat(3,1fr)}.grid-4{grid-template-columns:repeat(4,1fr)}.grid-31{grid-template-columns:1.6fr 1fr}}
+.grid>*,.card,.stack>*{min-width:0}.card{background:var(--n0);border:1px solid var(--n3);border-radius:var(--r4);padding:calc(1rem*var(--sp));box-shadow:inset 0 1px 0 var(--hi),var(--sh)}
+:root:where([data-t=dark],[data-t=sharp-dark]) .card{background:linear-gradient(180deg,color-mix(in srgb,var(--n0) 94%,#fff),var(--n0))}
+.eyebrow{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.18em;color:var(--fg3)}
+.muted{color:var(--fg3)}.sub{color:var(--fg2)}.sm{font-size:.8125rem}.xs{font-size:.75rem}
+.panel{border:1px solid var(--b,var(--n3));background:var(--s,var(--n1));border-radius:var(--r3);padding:calc(.75rem*var(--sp))}
+.pill{display:inline-flex;align-self:start;align-items:center;gap:.375rem;border-radius:var(--rf);background:var(--s,var(--n2));color:var(--f,var(--fg2));padding:.25rem .75rem;font-size:.75rem;font-weight:600;white-space:nowrap}
+[data-v=ac]{--s:var(--ac-s);--b:var(--ac-b);--f:var(--ac-f)}[data-v=ok]{--s:var(--ok-s);--b:var(--ok-b);--f:var(--ok-f)}[data-v=wa]{--s:var(--wa-s);--b:var(--wa-b);--f:var(--wa-f)}[data-v=no]{--s:var(--no-s);--b:var(--no-b);--f:var(--no-f)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border-radius:var(--r2);padding:.625rem 1rem;font-weight:600;font-size:.875rem;background:var(--n2);color:var(--fg);transition:background .12s;white-space:nowrap}
+.btn:hover{background:var(--n3)}.btn[data-p]{background:var(--ac);color:var(--on-ac)}.btn[data-p]:hover{filter:brightness(.92)}.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn[data-v]{background:var(--s);color:var(--f);border:1px solid var(--b)}.btn.ghost{background:none;border:1px solid var(--n3)}.btn.sm{padding:.375rem .625rem;font-size:.75rem}.btn.lg{padding:.875rem 1.25rem;font-size:1rem;width:100%}
+.field{display:block;width:100%;border:1px solid var(--n3);background:var(--n0);border-radius:var(--r2);padding:.625rem .75rem;font-variant-numeric:tabular-nums}
+.field:focus-visible{border-color:var(--ac);outline:none;box-shadow:0 0 0 4px var(--ac-r)}.field[aria-invalid=true]{border-color:var(--no-b);box-shadow:0 0 0 4px var(--no-s)}
+.field.big{font-size:calc(var(--fs)*1.75);font-weight:600;padding:.5rem .75rem;letter-spacing:-.02em}
+textarea.field{min-height:5rem;field-sizing:content;resize:vertical}
+select.field{appearance:none;padding-right:2.25rem;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%237d8794' stroke-width='2'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .625rem center}
+label.lbl{display:flex;flex-direction:column;gap:.375rem;font-size:.8125rem;font-weight:600;color:var(--fg2)}
+.check{display:flex;align-items:center;gap:.625rem;font-weight:500;color:var(--fg)}.check input{accent-color:var(--ac);width:1.125rem;height:1.125rem;margin:0}
+input[type=range]{accent-color:var(--ac);width:100%}
+.switch{appearance:none;width:2.5rem;height:1.5rem;border-radius:var(--rf);background:var(--n4);position:relative;transition:background .15s;flex:0 0 auto}.switch:before{content:"";position:absolute;top:.1875rem;left:.1875rem;width:1.125rem;height:1.125rem;border-radius:var(--rf);background:#fff;box-shadow:0 1px 2px #0003;transition:transform .15s}.check .switch,.switch{width:2.5rem;height:1.5rem}.switch:checked{background:var(--ac)}.switch:checked:before{transform:translateX(1rem)}
+.ring{box-shadow:0 0 0 4px var(--ac-r)}
+.tabs{display:flex;gap:.25rem;border-bottom:1px solid var(--n3)}.tabs button{padding:.5rem .75rem;font-weight:600;color:var(--fg3);border-bottom:2px solid transparent;margin-bottom:-1px}.tabs button[aria-selected=true]{color:var(--fg);border-color:var(--ac)}
+.seg{display:inline-flex;background:var(--n2);border-radius:var(--r2);padding:.1875rem;gap:.125rem}.seg button{padding:.375rem .75rem;border-radius:calc(var(--r2) - .1875rem);font-size:.8125rem;font-weight:600;color:var(--fg2)}.seg button[aria-pressed=true]{background:var(--n0);color:var(--fg);box-shadow:var(--sh)}
+.crumbs{display:flex;gap:.5rem;font-size:.8125rem;color:var(--fg3)}.crumbs a{text-decoration:none}.crumbs a:hover{color:var(--fg)}.crumbs [aria-current]{color:var(--fg);font-weight:600}
+.list{display:flex;flex-direction:column}.list>*{display:flex;align-items:center;gap:.75rem;padding:var(--cell) 0;border-bottom:1px solid var(--n3);text-decoration:none}.list>:last-child{border:0}.list .grow{min-width:0}.list h4,.list .t{font-weight:600}
+.tk{display:inline-flex;flex:0 0 auto}.tk i{width:1.5rem;height:1.5rem;border-radius:var(--rf);border:2px solid var(--n0);display:grid;place-items:center;font:700 .5625rem/1 var(--ff);font-style:normal;color:#fff;background:var(--k,#64748b)}.tk i+i{margin-left:-.5rem}.tk.lg i{width:2rem;height:2rem;font-size:.6875rem}
+.tl{list-style:none;padding:0;display:flex;flex-direction:column}.tl li{display:flex;gap:1rem;padding-bottom:1.25rem;position:relative}.tl li:not(:last-child):before{content:"";position:absolute;left:15px;top:2rem;bottom:.25rem;width:1px;background:var(--n3)}.tl li[data-s=done]:not(:last-child):before{background:var(--ok-b)}.tl .n{flex:0 0 auto;width:2rem;height:2rem;border-radius:var(--rf);border:1px solid var(--n3);display:grid;place-items:center;font-size:.75rem;font-weight:700;color:var(--fg3);background:var(--n0);position:relative;z-index:1}.tl [data-s=done] .n{background:var(--ok-s);border-color:var(--ok-b);color:var(--ok-f)}.tl [data-s=now] .n{background:var(--ac-s);border-color:var(--ac-b);color:var(--ac-f);box-shadow:0 0 0 4px var(--ac-r)}.tl .t{font-weight:600}.tl .d{font-size:.8125rem;color:var(--fg3)}.tl li:not([data-s]) .t{color:var(--fg3)}
+.meter{height:.5rem;border-radius:var(--rf);background:var(--ac-r);overflow:hidden}.meter i{display:block;height:100%;background:var(--ac);border-radius:var(--rf)}.meter[data-v=wa]{background:var(--wa-s)}.meter[data-v=wa] i{background:var(--wa-f)}.meter[data-v=no]{background:var(--no-s)}.meter[data-v=no] i{background:var(--no-f)}
+.sk{background:var(--n2);border-radius:var(--r1)}.sk.line{height:.875rem}.sk.blk{height:6rem}
+.spin{width:1.25rem;height:1.25rem;border-radius:var(--rf);border:2px solid var(--n3);border-top-color:var(--ac);animation:sp .8s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+.empty{text-align:center;padding:calc(2rem*var(--sp)) 1rem;color:var(--fg3)}.empty svg{margin:0 auto .75rem;color:var(--n4)}
+dialog{border:1px solid var(--n3);border-radius:var(--r4);background:var(--n0);box-shadow:0 20px 60px #0000004d;padding:0;width:min(26rem,calc(100vw - 2rem));margin:auto}dialog::backdrop{background:#0f172a80}
+[popover]{border:1px solid var(--n3);border-radius:var(--r2);background:var(--n0);box-shadow:var(--sh),0 8px 24px #0000001f;padding:.375rem;margin:0;inset:auto;color:var(--fg)}
+.menu{display:flex;flex-direction:column;min-width:12rem}.menu button{text-align:left;padding:.5rem .625rem;border-radius:var(--r1);font-size:.875rem}.menu button:hover{background:var(--n2)}.menu hr{border:0;border-top:1px solid var(--n3);margin:.25rem 0}
+.tip{font-size:.75rem;padding:.375rem .625rem;max-width:18rem;background:var(--fg);color:var(--n0);border:0}
+.toast{position:fixed;left:50%;bottom:1.25rem;transform:translateX(-50%);z-index:9;display:flex;align-items:center;gap:.625rem;padding:.625rem .875rem;border-radius:var(--r2);background:var(--n0);border:1px solid var(--b,var(--n3));box-shadow:0 8px 24px #0003;font-size:.875rem;font-weight:500}.toast[hidden]{display:none}.toast b{color:var(--f,var(--fg))}
+.alert{display:flex;gap:.625rem;align-items:flex-start}.alert svg{flex:0 0 auto;color:var(--f);margin-top:.125rem}.alert .t{font-weight:600;color:var(--f)}
+.tbl{font-size:.875rem}.tbl th,.tbl td{padding:var(--cell) .5rem;text-align:left;border-bottom:1px solid var(--n3);white-space:nowrap}.tbl th{font-size:.75rem;font-weight:600;color:var(--fg3);text-transform:uppercase;letter-spacing:.06em;position:sticky;top:0;background:var(--n0);cursor:pointer;user-select:none}.tbl th.r,.tbl td.r{text-align:right}.tbl td.r{font-variant-numeric:tabular-nums lining-nums}.tbl tbody tr:hover{background:var(--n1)}.tbl tbody tr:last-child td{border:0}.tbl th[aria-sort]:after{content:" ↓";color:var(--ac)}.tbl th[aria-sort=ascending]:after{content:" ↑"}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.delta{display:inline-flex;align-items:center;gap:.125rem;font-weight:600;font-variant-numeric:tabular-nums}.delta[data-d=up]{color:var(--ok-f)}.delta[data-d=down]{color:var(--no-f)}.delta[data-d=flat]{color:var(--fg3)}
+.stat{display:flex;flex-direction:column;gap:.25rem;min-width:0}.stat .l{font-size:.8125rem;color:var(--fg3);font-weight:500}.stat .v{font-size:calc(var(--fs)*1.75);font-weight:600;letter-spacing:-.02em;line-height:1.1}.stat svg{margin-top:.25rem}
+.hero{font-size:calc(var(--fs)*3);font-weight:600;letter-spacing:-.03em;line-height:1}
+.qp{display:flex;gap:.375rem}.qp button{flex:1;padding:.375rem;border-radius:var(--rf);border:1px solid var(--n3);font-size:.75rem;font-weight:600}.qp button[aria-pressed=true]{background:var(--ac-s);border-color:var(--ac-b);color:var(--ac-f)}
+.step{display:flex;border:1px solid var(--n3);border-radius:var(--r2);background:var(--n0)}.step input{flex:1;min-width:0;padding:.5rem .75rem;font-variant-numeric:tabular-nums;font-weight:600}.step div{display:flex;flex-direction:column;border-left:1px solid var(--n3)}.step button{flex:1;padding:0 .5rem;font-size:.625rem;color:var(--fg3)}.step button:hover{background:var(--n2);color:var(--fg)}
+.ratio{height:.375rem;border-radius:var(--rf);background:var(--n3);position:relative}.ratio i{position:absolute;top:50%;width:.875rem;height:.875rem;border-radius:var(--rf);background:var(--n0);border:2px solid var(--ac);transform:translate(-50%,-50%)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:.25rem 1rem;font-size:.875rem}.kv dt{color:var(--fg3)}.kv dd{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(5.5rem,1fr));gap:.5rem}.sw{border-radius:var(--r2);border:1px solid var(--n3);overflow:hidden;font-size:.6875rem}.sw i{display:block;height:2.5rem}.sw span{display:block;padding:.25rem .5rem;font-family:var(--fm)}
+.matte{background:color-mix(in srgb,var(--n0) 80%,transparent);backdrop-filter:none;transition:backdrop-filter 180ms ease-out;position:relative;overflow:hidden}.matte:before{content:"";position:absolute;inset:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");background-attachment:local}.matte:focus-within,.matte.active{backdrop-filter:blur(14px);background:color-mix(in srgb,var(--n0) 70%,transparent)}
+.phone{width:22rem;max-width:100%;border:1px solid var(--n3);border-radius:2rem;background:var(--n1);padding:.75rem;box-shadow:var(--sh)}.phone .bar{display:flex;justify-content:space-around;border-top:1px solid var(--n3);padding-top:.625rem;margin-top:.75rem}.phone .bar button{display:flex;flex-direction:column;align-items:center;gap:.125rem;font-size:.625rem;font-weight:600;color:var(--fg3)}.phone .bar button[aria-current]{color:var(--ac)}
+}
+@layer chart{
+.chart{position:relative}.chart svg{width:100%;height:auto;overflow:visible}.chart text{font:500 11px var(--ff);fill:var(--fg3);font-variant-numeric:tabular-nums}.chart .grid line{stroke:var(--n3);stroke-width:1}.chart .ln{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}.chart .ar{opacity:.1}.chart .dot{stroke:var(--n0);stroke-width:2}.chart .xh{stroke:var(--fg3);stroke-width:1;opacity:0}.chart:hover .xh,.chart.on .xh{opacity:1}.chart .hit{fill:transparent}
+.chart .bar{rx:0}.chart .bar:hover{filter:brightness(1.15)}.chart .cur{stroke:var(--fg);stroke-width:1}.chart text.lab{paint-order:stroke;stroke:var(--n0);stroke-width:3px;stroke-linejoin:round}
+.ctip{position:absolute;pointer-events:none;background:var(--fg);color:var(--n0);font-size:.75rem;padding:.375rem .625rem;border-radius:var(--r1);white-space:nowrap;transform:translate(-50%,-110%);display:none;z-index:2}.ctip b{font-weight:600}.ctip i{display:inline-block;width:.75rem;height:2px;vertical-align:middle;margin-right:.375rem;background:var(--k)}.chart.on .ctip{display:block}
+.legend{display:flex;gap:1rem;font-size:.75rem;color:var(--fg2);flex-wrap:wrap}.legend span{display:inline-flex;align-items:center;gap:.375rem}.legend i{width:.875rem;height:2px;background:var(--k)}.legend i.rect{height:.625rem;border-radius:2px}
+.spark{width:5rem;height:1.5rem}.spark path{fill:none;stroke-width:1.5}
+details.tv{font-size:.75rem}details.tv summary{color:var(--fg3);cursor:pointer}details.tv table{margin-top:.5rem}details.tv td,details.tv th{padding:.125rem .5rem;text-align:right;border-bottom:1px solid var(--n3)}details.tv th:first-child,details.tv td:first-child{text-align:left}
+}
+@layer page{
+.page{max-width:76rem;margin-inline:auto;padding:calc(1.5rem*var(--sp)) 1.25rem calc(3rem*var(--sp));display:flex;flex-direction:column;gap:calc(2rem*var(--sp))}
+.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--n1) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--n3)}.top .in{max-width:76rem;margin-inline:auto;padding:.625rem 1.25rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}.brand{font-weight:700;letter-spacing:-.03em;font-size:1.125rem}.brand span{color:var(--fg3);font-weight:500}
+.top nav{display:flex;gap:.125rem;flex-wrap:wrap}.top nav a{padding:.375rem .625rem;border-radius:var(--r1);font-size:.8125rem;font-weight:500;color:var(--fg2);text-decoration:none}.top nav a:hover{background:var(--n2);color:var(--fg)}
+section{scroll-margin-top:5rem;display:flex;flex-direction:column;gap:calc(1rem*var(--sp))}.sec-h{display:flex;flex-direction:column;gap:.25rem}.sec-h p{color:var(--fg2)}
+.spec{font-size:.75rem;color:var(--fg3);display:flex;gap:.75rem;flex-wrap:wrap}.spec code{background:var(--n2);padding:.0625rem .375rem;border-radius:.25rem}
+}
+</style>
+
+<header class=top><div class=in>
+<div class=brand>μi <span>design language</span></div>
+<nav><a href="#why">Philosophy</a><a href="./paper/">The paper</a><a href="#found">Foundations</a><a href="#base">Base</a><a href="#sharp">Sharp</a><a href="#cl">CL manager</a><a href="#matte">Matte</a><a href="./app/">μApp demo ↗</a></nav>
+<div class="row grow" style="justify-content:flex-end;gap:.5rem;flex-wrap:wrap">
+<div class=seg role=group aria-label=Density><button data-den=base aria-pressed=true>Base</button><button data-den=sharp>Sharp</button></div>
+<div class=seg role=group aria-label=Luminance><button data-lum=light aria-pressed=true>Light</button><button data-lum=dark>Dark</button></div>
+<label class="check sm"><input type=checkbox class=switch id=matteSw> Matte</label>
+</div></div></header>
+
+<main class=page>
+
+<section id=why>
+<div class=sec-h><span class=eyebrow>Design philosophy</span><h1>Everything in the first flight</h1>
+<p>A DeFi interface is a settlement instrument: every millisecond between <em>user decides</em> and <em>pixels confirm</em> is spread the user pays and volume the protocol loses. μi is the smallest design language that lets one engineer ship a complete, four-theme, accessible surface <b>in one network round trip</b> — and then grow it without ever paying a framework tax on first paint.</p>
+<p class=sub>Every number on this page is measured and reproducible, or it is a budget with the physics that justifies it. Nothing here is a projection. A design language that invents its own evidence cannot ask a CI gate to be honest.</p></div>
+
+<div class="grid grid-31">
+<div class="card stack">
+<h3>The budget, from physics</h3>
+<p class="sm sub">The first flight of a cold connection is what paints; everything after it is a second round trip. So the budget is arithmetic, not taste.</p>
+<div class=kv>
+<dt>QUIC initial congestion window</dt><dd>≈ 12,000 B</dd>
+<dt>− TLS certificate chain, cold</dt><dd>≈ 3,000 B</dd>
+<dt>= application bytes in flight 1</dt><dd>≈ 9,000 B</dd>
+<dt>0-RTT resume (no cert on the wire)</dt><dd>12,000 B</dd>
+</div>
+<p class="sm muted">Quoted in brotli, never gzip: below ~1 KB gzip misrepresents a document by 2–3×. And bytes are not the only cost — a 13.4 KB Svelte 5 island parses and evaluates in 11.3 ms on Apple Silicon against 3.8 ms for μi's 653 B signal engine, and mid-tier Android runs 4–8× slower.</p>
+</div>
+<div class="card stack">
+<h3>Three layers, one system</h3>
+<div class=list>
+<div><span class="pill" data-v=ac>System</span><div class=grow><div class=t>μi</div><p class="sm muted">Tokens, four themes, ~20 CSS recipes at roughly 35 B each. Always on.</p></div></div>
+<div><span class=pill>Layer</span><div class=grow><div class=t>Matte Glass</div><p class="sm muted">An optional overlay, never a theme: 323 B of static noise, blur spent only on the container in focus.</p></div></div>
+<div><span class="pill" data-v=ok>Unit</span><div class=grow><div class=t>μApp</div><p class="sm muted">One intent, shipped as one document. Islands arrive afterwards, on gesture.</p></div></div>
+</div>
+<p class="sm muted">Density (Base / Sharp) is four custom properties, luminance is <code>light-dark()</code>, and Matte is a class — so the three axes multiply instead of forking the stylesheet.</p>
+</div>
+</div>
+
+<div class="card stack">
+<div class="row between wrap"><h3>The vocabulary</h3><span class="pill sm">every number on this card is measured</span></div>
+<div class="grid grid-2">
+<div class=list>
+<div><span class="pill sm" data-v=ok>zero</span><div class=grow><div class=t>Binary-zero</div><p class="sm muted">No runtime dependency ships. The μApp's wallet codes its own calldata; viem is a test oracle in <code>devDependencies</code>.</p></div></div>
+<div><span class="pill sm" data-v=ac>P0</span><div class=grow><div class=t>One document</div><p class="sm muted">Markup, CSS and the 653 B signal engine inlined: <b>3,792 B</b> brotli, zero subrequests.</p></div></div>
+<div><span class="pill sm" data-v=ok>CLS 0</span><div class=grow><div class=t>Nothing moves</div><p class="sm muted">Static markup matches island output and islands adopt with <code>replaceChildren</code>. A gate drives real Chrome and refuses to trust a zero unless every island actually loaded.</p></div></div>
+</div>
+<div class=list>
+<div><span class="pill sm">instant</span><div class=grow><div class=t>Non-blocking by construction</div><p class="sm muted">Inline <code>type=module</code> is deferred, so script never blocks paint — measured: inlining four more islands moved FCP by <b>0 ms</b> and only <code>load</code> by 172 ms.</p></div></div>
+<div><span class="pill sm" data-v=ac>preload</span><div class=grow><div class=t>modulepreload, eager</div><p class="sm muted">The one chunk two islands share is fetched from <code>&lt;head&gt;</code> during the first flight; every other island waits for a gesture.</p></div></div>
+<div><span class="pill sm" data-v=wa>H2/H3</span><div class=grow><div class=t>The flight is the budget</div><p class="sm muted">Measured on our own edge over HTTP/2: <b>9,472 B</b> arrives in one flight, <b>9,728 B</b> costs a whole round trip. QUIC's window is larger — but Pages serves no h3, so 9 KB is the number we design to.</p></div></div>
+</div>
+</div>
+</div>
+
+<div class="card stack">
+<div class="row between wrap"><h3>The seven rules</h3><span class="pill sm">enforced in CI, not in review</span></div>
+<div class=list>
+<div><span class=pill>1</span><div class=grow><div class=t>Blur is conditional</div><p class="sm muted"><code>backdrop-filter:none</code> at rest; <code>blur(14px)</code> only on <code>:focus-within</code> or <code>.active</code>. Never stack <code>saturate()</code> on it.</p></div><span class="pill sm" data-v=ac>Matte</span></div>
+<div><span class=pill>2</span><div class=grow><div class=t>Noise is static</div><p class="sm muted">One inlined SVG turbulence filter at 3.5% opacity with <code>background-attachment:local</code> — 323 B, and <code>fixed</code> would repaint every scroll frame.</p></div><span class="pill sm" data-v=ac>Matte</span></div>
+<div><span class=pill>3</span><div class=grow><div class=t>Text never floats</div><p class="sm muted">Every text container sits on an opaque surface token, ≥ 4.5:1 in both luminances. Translucent contrast cannot be verified at build time.</p></div><span class="pill sm" data-v=ok>contrast</span></div>
+<div><span class=pill>4</span><div class=grow><div class=t>Color is intent</div><p class="sm muted">The palette is closed: <code>--ac</code> continue, <code>--ok</code> filled, <code>--wa</code> caution, <code>--no</code> reverted. One primary CTA per view, and never colour alone.</p></div><span class="pill sm" data-v=ok>palette</span></div>
+<div><span class=pill>5</span><div class=grow><div class=t>Motion is meaning</div><p class="sm muted">120–180 ms ease-out, only on price change or execution state; <code>prefers-reduced-motion</code> disables all of it.</p></div><span class="pill sm" data-v=ok>motion</span></div>
+<div><span class=pill>6</span><div class=grow><div class=t>Fits the flight</div><p class="sm muted">P0 ≤ 9 KB brotli, any later chunk ≤ 12 KB. No Tailwind preflight, no webfont, in P0.</p></div><span class="pill sm" data-v=ok>size</span></div>
+<div><span class=pill>7</span><div class=grow><div class=t>CLS = 0</div><p class="sm muted">Static markup and island output have identical dimensions. Islands <em>adopt</em> their container — <code>replaceChildren</code> — they never append.</p></div><span class="pill sm" data-v=ok>layout</span></div>
+</div>
+<p class="sm muted">Six gates run on the built artifact and the build fails on any one of them: <code>size</code>, <code>contrast</code>, <code>palette</code>, <code>motion</code>, <code>syntax</code> (ES2023 ESM, no CommonJS), <code>layout</code> — the last drives headless Chrome over the DevTools protocol and refuses to trust a zero unless every lazy island was really fetched first.</p>
+</div>
+
+<div class="card stack">
+<div class="row between wrap"><h3>Tiering, inverted</h3><span class="pill sm" data-v=ok>measured on the page below</span></div>
+<p class="sm sub">Conventional apps ship a framework first and the view second. A μApp inverts that: the view is the payload, and the framework — if a view ever needs one — arrives as a chunk that two islands share. These are the live bytes behind the demo, not a projection. P0 never contains a framework: inlining even the smallest Svelte 5 that can render this view measures 12,066 B, 31% over the budget.</p>
+<div class="grid grid-3">
+<div class="panel stack" data-v=ac><span class=eyebrow>Tier 1 · P0</span><div class="row between"><span class=sm>document, CSS + JS inlined</span><b class=num>3,710 B</b></div><p class="xs muted">One file, zero subrequests, a 653 B signal engine instead of a framework. Four themes included.</p></div>
+<div class="panel stack"><span class=eyebrow>Tier 2 · shared</span><div class="row between"><span class=sm>Svelte 5 runtime chunk</span><b class=num>9,925 B</b></div><p class="xs muted">Only when a view needs components. Eagerly preloaded from <code>&lt;head&gt;</code>, because two islands share it. Built by Rollup, not Bun — 9,925 B against 13,035 B, which would not fit the 12 KB chunk budget at all. Stock Svelte: no patches into the framework.</p></div>
+<div class="panel stack"><span class=eyebrow>Tier 3 · on gesture</span><div class="row between"><span class=sm>wallet · chart · islands</span><b class=num>764 B</b></div><p class="xs muted">Wallet 764 B — no client layer, no signing library, and no ABI library: a token call is a selector plus 32-byte words, and viem stays a test oracle. Histogram 577 B · Svelte islands 332 and 2,183 B.</p></div>
+</div>
+<div class="row between wrap">
+<p class="sm muted">A cold load of the demo fetches two files beyond the document: the shared runtime, preloaded from <code>&lt;head&gt;</code>, and the histogram, which is in view on arrival. The wallet and the component islands wait for a tap, and every adoption measures CLS 0.</p>
+<a class="btn lg" data-p href="./app/" style="width:auto">Open the live μApp ↗</a>
+</div>
+</div>
+</section>
+
+<section id=found>
+<div class=sec-h><span class=eyebrow>Foundations</span><h1>One vocabulary, three axes</h1><p>Density (Base / Sharp) is four custom properties. Luminance is <code>light-dark()</code>. Matte is a class. Switch any of them in the header and every component below re-renders from the same tokens.</p></div>
+<div class="grid grid-2">
+<div class="card stack">
+<h3>Neutral ramp</h3>
+<div class=swatches>
+<div class=sw><i style="background:var(--n0)"></i><span>--n0</span></div><div class=sw><i style="background:var(--n1)"></i><span>--n1</span></div><div class=sw><i style="background:var(--n2)"></i><span>--n2</span></div><div class=sw><i style="background:var(--n3)"></i><span>--n3</span></div><div class=sw><i style="background:var(--n4)"></i><span>--n4</span></div>
+<div class=sw><i style="background:var(--fg3)"></i><span>--fg3</span></div><div class=sw><i style="background:var(--fg2)"></i><span>--fg2</span></div><div class=sw><i style="background:var(--fg)"></i><span>--fg</span></div>
+</div>
+<h3>Intent (closed palette)</h3>
+<div class=swatches>
+<div class=sw><i style="background:var(--ac)"></i><span>--ac</span></div><div class=sw><i style="background:var(--ok-f)"></i><span>--ok-f</span></div><div class=sw><i style="background:var(--wa-f)"></i><span>--wa-f</span></div><div class=sw><i style="background:var(--no-f)"></i><span>--no-f</span></div>
+<div class=sw><i style="background:var(--ac-s);border-bottom:1px solid var(--ac-b)"></i><span>--ac-s</span></div><div class=sw><i style="background:var(--ok-s);border-bottom:1px solid var(--ok-b)"></i><span>--ok-s</span></div><div class=sw><i style="background:var(--wa-s);border-bottom:1px solid var(--wa-b)"></i><span>--wa-s</span></div><div class=sw><i style="background:var(--no-s);border-bottom:1px solid var(--no-b)"></i><span>--no-s</span></div>
+</div>
+<h3>Chart series (validated)</h3>
+<div class=swatches><div class=sw><i style="background:var(--c1)"></i><span>--c1</span></div><div class=sw><i style="background:var(--c2)"></i><span>--c2</span></div><div class=sw><i style="background:var(--c3)"></i><span>--c3</span></div></div>
+<p class="sm muted">Desaturated by intent: faintly warm neutrals, muted intent colours, and surfaces that are pastel tints rather than saturated washes — comfortable to read for hours, and still unambiguous. Every text/surface pair clears 4.5:1 in both luminances (<code>gates/contrast.js</code>, 40 pairs, worst 4.68). The three series colours are deliberately <em>not</em> desaturated: data ink should out-argue the interface, and these exact values passed the CVD validator.</p>
+</div>
+<div class="card stack">
+<h3>Type &amp; density</h3>
+<h1>Move T from Base</h1><h2>Withdrawal progress</h2><h3>Fee tier 0.05%</h3>
+<p>Body copy sits at <code>--fs</code>/<code>--lh</code>. Base reads at 16px/1.6; Sharp compresses to 14px/1.4 with tabular figures so columns align.</p>
+<div class="kv"><dt>Proportional</dt><dd style="font-variant-numeric:normal">1,111.11 · 8,888.88</dd><dt>Tabular (Sharp)</dt><dd>1,111.11 · 8,888.88</dd><dt>Mono (hashes)</dt><dd class=mono>0x7b7c…0000</dd></div>
+<div class="row wrap"><span class=pill>Neutral</span><span class=pill data-v=ac>Primary</span><span class=pill data-v=ok>Filled</span><span class=pill data-v=wa>High slippage</span><span class=pill data-v=no>Reverted</span></div>
+<div class="row wrap"><button class=btn data-p>Primary</button><button class=btn>Secondary</button><button class="btn ghost">Ghost</button><button class=btn data-v=ok>Deposit</button><button class=btn data-v=no>Withdraw</button><button class=btn disabled>Disabled</button></div>
+<div class=spec><code>--fs</code><code>--lh</code><code>--sp</code><code>--cell</code><span>are the only density tokens</span></div>
+</div>
+</div>
+</section>
+
+<section id=base>
+<div class=sec-h><span class=eyebrow>Base · human</span><h2>One decision at a time</h2><p>Readable, minimum, adaptable. These patterns cover most web, mobile-web and web-component surfaces: a pay/send flow, forms, a dialog, popovers, alerts, progress, empty states and navigation.</p></div>
+
+<div class="grid grid-3">
+<div class="card stack" style="gap:calc(.75rem*var(--sp))">
+<span class="pill" data-v=ac>bind.to/alice</span>
+<h3>Send to Alice</h3>
+<label class=lbl>Amount<input class="field big num" inputmode=decimal placeholder="0.00" id=payAmt value="250"></label>
+<div class="row between sm"><span class=muted>≈ <b class=num id=payUsd>$250.00</b> USD · routed to USDC on Base</span><button class="btn sm ghost" id=payMax>Max</button></div>
+<label class=lbl>Note (optional)<textarea class=field placeholder="For the dinner"></textarea></label>
+<label class=check><input type=checkbox checked> Save Alice as a contact</label>
+<button class="btn lg" data-p id=payBtn>Send $250.00</button>
+<p class="xs muted">Routes via Bind. No gas for the sender.</p>
+</div>
+
+<div class="card stack">
+<h3>Form controls</h3>
+<label class=lbl>Network<select class=field><option>Base<option>Ethereum<option>Mezo<option>Arbitrum</select></label>
+<label class=lbl>Recipient<input class=field placeholder="name or 0x…" aria-invalid=true value="0x7b7c"><span class="xs" style="color:var(--no-f)">Address is too short.</span></label>
+<label class=lbl>Slippage tolerance · <span class=num id=slipV>0.5%</span><input type=range min=0.1 max=3 step=0.1 value=0.5 id=slip></label>
+<div class="row wrap" style="gap:1rem"><label class=check><input type=radio name=sp checked> Fast</label><label class=check><input type=radio name=sp> Normal</label><label class=check><input type=radio name=sp> Cheap</label></div>
+<label class="check"><input type=checkbox class=switch checked> Expert mode</label>
+<div class="row wrap"><button class=btn id=openDlg>Select token</button><button class=btn popovertarget=menu1 id=menuBtn>Actions ▾</button><button class="btn ghost" id=tipBtn popovertarget=tip1>?</button><button class=btn data-v=ok id=toastBtn>Show toast</button></div>
+</div>
+
+<div class="card stack">
+<h3>Progress &amp; state</h3>
+<ol class=tl>
+<li data-s=done><span class=n>✓</span><div><p class=t>Initiated on Base</p><p class=d>2 min ago</p></div></li>
+<li data-s=now><span class=n>2</span><div><p class=t>Prove on Ethereum</p><p class=d>Waiting for state root</p></div></li>
+<li><span class=n>3</span><div><p class=t>Challenge window</p><p class=d>7 days</p></div></li>
+<li><span class=n>4</span><div><p class=t>Finalize</p></div></li>
+</ol>
+<div class=stack style="gap:.25rem"><div class="row between sm"><span class=muted>Health factor</span><b class=num>1.42</b></div><div class=meter data-v=wa><i style="width:42%"></i></div></div>
+<div class=stack style="gap:.25rem"><div class="row between sm"><span class=muted>Epoch progress</span><b class=num>68%</b></div><div class=meter><i style="width:68%"></i></div></div>
+<div class="row"><span class=spin role=status aria-label=Loading></span><span class="sm muted">Confirming…</span></div>
+</div>
+</div>
+
+<div class="grid grid-3">
+<div class="card stack">
+<h3>Alerts</h3>
+<div class="panel alert" data-v=ok><svg width=16 height=16 viewBox="0 0 16 16" fill=none stroke=currentColor stroke-width=2><path d="m3 8 3.5 3.5L13 5"/></svg><div><p class=t>Proven</p><p class=sm>Withdrawal can be finalized after the challenge window.</p></div></div>
+<div class="panel alert" data-v=wa><svg width=16 height=16 viewBox="0 0 16 16" fill=none stroke=currentColor stroke-width=2><path d="M8 3v6M8 12v.5"/></svg><div><p class=t>High slippage</p><p class=sm>Quote moves 1.8% for this size. Consider splitting.</p></div></div>
+<div class="panel alert" data-v=no><svg width=16 height=16 viewBox="0 0 16 16" fill=none stroke=currentColor stroke-width=2><path d="m4 4 8 8M12 4l-8 8"/></svg><div><p class=t>Reverted</p><p class=sm>Simulation failed: insufficient allowance.</p></div></div>
+<div class="panel alert" data-v=ac><svg width=16 height=16 viewBox="0 0 16 16" fill=none stroke=currentColor stroke-width=2><path d="M8 7v5M8 4v.5"/></svg><div><p class=t>New epoch in 12 min</p><p class=sm>Netting settles on the hour.</p></div></div>
+</div>
+
+<div class="card stack">
+<h3>Empty &amp; loading</h3>
+<div class=empty><svg width=32 height=32 viewBox="0 0 24 24" fill=none stroke=currentColor stroke-width=1.5><rect x=3 y=5 width=18 height=14 rx="3"/><path d="M3 10h18"/></svg><p class=t>No positions yet</p><p class=sm>Add liquidity to a pool to see it here.</p><button class="btn sm" data-p style="margin-top:.75rem">Add liquidity</button></div>
+<div class=stack aria-busy=true aria-label="Loading position"><div class="sk line" style="width:40%"></div><div class="sk blk"></div><div class="row"><div class="sk line grow"></div><div class="sk line" style="width:4rem"></div></div></div>
+<p class="xs muted">Skeletons reserve the final height. CLS stays 0 by construction.</p>
+</div>
+
+<div class="card stack">
+<h3>Navigation</h3>
+<nav class=crumbs><a href="#">Pools</a><span>/</span><a href="#">BTC/MUSD</a><span>/</span><span aria-current=page>Position #1</span></nav>
+<div class=tabs role=tablist><button role=tab aria-selected=true>Swap</button><button role=tab>DCA</button><button role=tab>Limit</button></div>
+<div class=seg role=group><button aria-pressed=true>7d</button><button>30d</button><button>90d</button></div>
+<div class=list>
+<a href="#"><span class=tk><i style="--k:#f7931a">₿</i></span><div class=grow><h4>Bitcoin</h4><p class="sm muted">BTC</p></div><b class=num>0.4210</b></a>
+<a href="#"><span class=tk><i style="--k:#2775ca">$</i></span><div class=grow><h4>USD Coin</h4><p class="sm muted">USDC</p></div><b class=num>12,400.00</b></a>
+<a href="#"><span class=tk><i style="--k:#e33d5c">M</i></span><div class=grow><h4>Mezo USD</h4><p class="sm muted">MUSD</p></div><b class=num>2,130.00</b></a>
+</div>
+</div>
+</div>
+
+<div class="grid grid-2">
+<div class="card stack">
+<h3>Mobile</h3>
+<div class="row wrap" style="align-items:flex-start;gap:1.5rem">
+<div class=phone>
+<div class="row between" style="padding:.25rem .5rem"><b>Swap</b><span class="pill" data-v=ok>● Base</span></div>
+<div class="card stack" style="padding:.75rem;gap:.5rem">
+<div class="panel stack" style="gap:.125rem"><div class="row between xs muted"><span>From</span><span>Balance 1 BTC</span></div><div class="row between"><input class="field big num" style="border:0;padding:0;background:none" value="0.001"><button class="btn sm ghost"><span class=tk><i style="--k:#f7931a">₿</i></span>BTC ▾</button></div></div>
+<button class="btn sm ghost" style="align-self:center;border-radius:var(--rf)">↓</button>
+<div class="panel stack" style="gap:.125rem"><div class="row between xs muted"><span>To</span><span>Balance 25,000 MUSD</span></div><div class="row between"><b class="num" style="font-size:1.5rem">75.20</b><button class="btn sm ghost"><span class=tk><i style="--k:#e33d5c">M</i></span>MUSD ▾</button></div></div>
+<div class="kv sm"><dt>Rate</dt><dd>1 BTC = 75,202 MUSD</dd><dt>Min received</dt><dd>74,826 MUSD</dd><dt>Route</dt><dd>CL 0.05% → Stable</dd></div>
+<button class="btn lg" data-p>Connect wallet</button>
+</div>
+<div class=bar><button aria-current=page><svg width=18 height=18 viewBox="0 0 24 24" fill=none stroke=currentColor stroke-width=2><path d="M7 16V8l5 4 5-4v8"/></svg>Swap</button><button><svg width=18 height=18 viewBox="0 0 24 24" fill=none stroke=currentColor stroke-width=2><path d="M4 18h16M4 12h16M4 6h16"/></svg>Pools</button><button><svg width=18 height=18 viewBox="0 0 24 24" fill=none stroke=currentColor stroke-width=2><circle cx=12 cy=12 r="8"/></svg>Positions</button><button><svg width=18 height=18 viewBox="0 0 24 24" fill=none stroke=currentColor stroke-width=2><path d="M4 4h16v16H4z"/></svg>Wallet</button></div>
+</div>
+<div class="stack sm sub" style="max-width:20rem"><p>Same tokens, no breakpoints in the components. The swap card is the one from the CL manager wireframe: from/to panels, balances, rate/min/route rows, one primary.</p><p>Bottom bar buttons pair icon and label. Color never carries state alone.</p></div>
+</div>
+</div>
+
+<div class="card stack">
+<h3>Web component</h3>
+<p class="sm sub">Custom elements inherit the custom properties through shadow DOM, so a <code>&lt;mui-stat&gt;</code> follows whichever theme the host page sets.</p>
+<div class="row wrap" style="gap:1rem"><mui-stat label="TVL" value="$18.4M" delta="+3.1%"></mui-stat><mui-stat label="24h volume" value="$2.1M" delta="−0.8%"></mui-stat><mui-stat label="Fees 24h" value="$1,050" delta="+12%"></mui-stat></div>
+<pre class="panel sm mono" style="overflow:auto">&lt;mui-stat label="TVL" value="$18.4M" delta="+3.1%"&gt;&lt;/mui-stat&gt;</pre>
+</div>
+</div>
+</section>
+
+<section id=sharp>
+<div class=sec-h><span class=eyebrow>Sharp · dense</span><h2>Markets, performance, positions</h2><p>Switch density to <b>Sharp</b> in the header. Figures become tabular, spacing tightens, rows compress. Charts follow the dataviz rules: 2px lines, 10% area wash, ≤24px bars, hairline grid, crosshair tooltips, a table view under every chart.</p></div>
+
+<div class="grid grid-4" id=kpis></div>
+
+<div class="card stack">
+<div class="row between wrap"><div><h3>Markets</h3><p class="sm muted">Click a header to sort. Sparklines are 7d.</p></div><div class="row wrap"><input class=field placeholder="Filter markets" id=mktFilter style="width:12rem;flex:1;min-width:8rem"><div class=seg role=group id=mktKind><button aria-pressed=true>All</button><button>CL</button><button>Stable</button></div></div></div>
+<div class=scroll><table class=tbl id=mkt><thead><tr><th data-k=pair>Market</th><th class=r data-k=price>Price</th><th class=r data-k=d24>24h</th><th class=r>7d</th><th class=r data-k=vol>Volume 24h</th><th class=r data-k=tvl>TVL</th><th class=r data-k=apr aria-sort=descending>APR</th><th class=r>Fee / tick</th></tr></thead><tbody></tbody></table></div>
+</div>
+
+<div class="grid grid-31">
+<div class="card stack">
+<div class="row between wrap"><div class=stack style="gap:.125rem"><span class=eyebrow id=perfLbl>Pool · BTC/MUSD 0.05%</span><div class="row" style="gap:.75rem"><span class="hero num" id=perfHero>—</span><span class="delta" id=perfDelta></span></div></div>
+<div class="row wrap"><div class=seg role=group id=perfEnt><button aria-pressed=true data-e=pool>Pool</button><button data-e=asset>Asset</button><button data-e=vault>Vault</button></div><div class=seg role=group id=perfRange><button data-r=7 aria-pressed=true>7d</button><button data-r=30>30d</button><button data-r=90>90d</button></div><label class="check sm"><input type=checkbox class=switch id=perfCmp> vs HODL</label></div></div>
+<div class=legend id=perfLegend hidden><span><i style="--k:var(--c1)"></i>Strategy</span><span><i style="--k:var(--c2)"></i>HODL</span></div>
+<div class=chart id=perf></div>
+</div>
+<div class="card stack">
+<div class="row between"><h3>Volume &amp; fees</h3><span class="pill">14d</span></div>
+<div class=legend><span><i class=rect style="--k:var(--c1)"></i>Volume</span><span><i class=rect style="--k:var(--c3)"></i>Fees ×100</span></div>
+<div class=chart id=vol></div>
+<div class="kv sm"><dt>Avg daily volume</dt><dd id=volAvg></dd><dt>Fee capture</dt><dd>0.05% · 5.0 bps</dd></div>
+</div>
+</div>
+
+<div class="grid grid-2">
+<div class="card stack">
+<div class="row between"><h3>Pools</h3><span class="sm muted">api.backbone.to/mezo</span></div>
+<div class=list id=pools></div>
+</div>
+<div class="card stack">
+<div class="row between"><h3>Positions</h3><button class="btn sm" data-p>New position</button></div>
+<div class=list id=positions></div>
+</div>
+</div>
+</section>
+
+<section id=cl>
+<div class=sec-h><span class=eyebrow>CL manager</span><h2>Concentrated liquidity position</h2><p>The screens from the Min-CL wireframe: create a position, manage it, add or remove. The liquidity histogram recolors as you change the range.</p></div>
+<div class="grid grid-31">
+<div class="card stack">
+<div class="row between wrap"><div class="row"><span class="tk lg"><i style="--k:#f7931a">₿</i><i style="--k:#e33d5c">M</i></span><div><h3>BTC / MUSD position</h3><p class="sm muted">Fee 0.05% · tick spacing 10 · Pos #1</p></div></div><div class=seg role=group id=clMode><button aria-pressed=true>Manage</button><button>Add</button><button>Remove</button></div></div>
+<div class="row between sm"><span class=muted>Liquidity around current price</span><label class="check xs"><input type=checkbox class=switch id=invert> MUSD per BTC</label></div>
+<div class=chart id=hist></div>
+<div class="grid grid-3" style="gap:.75rem">
+<div class=stack style="gap:.25rem"><span class="xs muted">Min price</span><div class=step><input class=num id=minP value="85,000"><div><button data-st="minP" data-dir=1>▲</button><button data-st="minP" data-dir=-1>▼</button></div></div><span class="xs muted">Tick lower <span class=num id=tickLo>106820</span></span></div>
+<div class=stack style="gap:.25rem"><span class="xs muted">Max price</span><div class=step><input class=num id=maxP value="150,000"><div><button data-st="maxP" data-dir=1>▲</button><button data-st="maxP" data-dir=-1>▼</button></div></div><span class="xs muted">Tick upper <span class=num id=tickHi>112500</span></span></div>
+<div class=stack style="gap:.25rem"><span class="xs muted">Current price</span><b class="num" style="font-size:1.375rem;line-height:1.4">87,069.00</b><span class="pill xs" data-v=ok>● In range</span></div>
+</div>
+</div>
+
+<div class="card stack" id=clSide>
+<div data-pane=manage class=stack>
+<span class=eyebrow>Position</span>
+<div class=ratio><i style="left:38%"></i></div>
+<div class="row between num"><b>0.01614 BTC</b><b>200 MUSD</b></div>
+<div class="row between sm"><span class=muted>38% / 62%</span><span class=muted>≈ $3,605</span></div>
+<div class="row between"><span class=eyebrow>Fees</span><button class="btn sm" data-v=ok>Collect fee</button></div>
+<div class="row between num"><b>0.00001 BTC</b><b>3.00001 MUSD</b></div>
+<div class="row" style="margin-top:.5rem"><button class="btn grow" data-p data-go=1>Add liquidity</button><button class="btn grow ghost" data-go=2>Remove liquidity</button></div>
+</div>
+<div data-pane=add class=stack hidden>
+<span class=eyebrow>Add amounts</span>
+<label class=lbl>BTC<input class="field num" value="0" id=addBtc><span class="xs muted">Balance 1 BTC</span></label>
+<label class=lbl>MUSD<input class="field num" value="0" id=addMusd><span class="xs muted">Balance 100 MUSD</span></label>
+<p class="xs muted">Entering one side computes the other from the current position ratio.</p>
+<div class="kv sm"><dt>Network cost</dt><dd>$1.02</dd><dt>Approvals</dt><dd>2 tokens</dd></div>
+<button class="btn lg" data-p>Add liquidity</button>
+</div>
+<div data-pane=remove class=stack hidden>
+<span class=eyebrow>Remove</span>
+<input class="field big num" id=rmPct value="50%" style="text-align:center">
+<div class=qp id=qp><button>25%</button><button aria-pressed=true>50%</button><button>75%</button><button>100%</button></div>
+<div class="kv sm"><dt>Remove amount</dt><dd id=rmAmt>0.00807 BTC · 100 MUSD</dd><dt>Network cost</dt><dd>$1.02</dd></div>
+<button class="btn lg" data-v=no>Remove liquidity</button>
+</div>
+</div>
+</div>
+</section>
+
+<section id=matte>
+<div class=sec-h><span class=eyebrow>Matte Glass</span><h2>An overlay, not a theme</h2><p>Toggle Matte in the header. Cards marked for it gain a 323-byte static noise texture and a 14px blur that engages only on focus. Nothing else changes.</p></div>
+<div class="grid grid-2">
+<div class="card stack" data-matte tabindex=0><h3>Focus this card</h3><p class="sm sub">Blur costs GPU, so it is spent only on the container the user is in. Click or tab into this card with Matte enabled.</p><label class=lbl>Amount<input class="field num" placeholder="0.00"></label></div>
+<div class="card stack" data-matte tabindex=0><h3>Static noise</h3><p class="sm sub">One inlined SVG turbulence filter at 3.5% opacity, <code>background-attachment: local</code>. No animation, no repaint on scroll.</p><div class="row wrap"><span class=pill data-v=ac>Rule 1</span><span class=pill data-v=ac>Rule 2</span></div></div>
+</div>
+</section>
+
+<footer class="sm muted stack" style="gap:.25rem"><span>Zero dependencies. One file. Density and luminance persist in <code>localStorage.mui</code>.</span><span>This gallery is not a μApp: it ships every recipe at once so they can be compared side by side. The 9 KB budget is a rule about μApps — the <a href="./app/">demo</a> is the one that has to keep it.</span><span id=bytes></span></footer>
+</main>
+
+<dialog id=dlg><div class="stack" style="padding:1.25rem"><div class="row between"><h3>Select a token</h3><button class="btn sm ghost" id=closeDlg aria-label=Close>✕</button></div><input class=field placeholder="Enter name or token address" id=dlgQ autofocus><div class=list id=dlgList style="max-height:16rem;overflow:auto"></div></div></dialog>
+<div id=menu1 popover class=menu><button>Increase liquidity</button><button>Collect fees</button><hr><button style="color:var(--no-f)">Close position</button></div>
+<div id=tip1 popover class=tip>Slippage is the difference between the quoted and executed price. 0.5% is safe for liquid pairs.</div>
+<div class=toast id=toast hidden data-v=ok><svg width=16 height=16 viewBox="0 0 16 16" fill=none stroke=var(--ok-f) stroke-width=2><path d="m3 8 3.5 3.5L13 5"/></svg><span><b>Sent $250.00</b> to alice · 680 ms</span></div>
+
+<script>
+// ---------- theme ----------
+const R=document.documentElement,LS=localStorage;
+const setT=(den,lum)=>{R.dataset.t=den==='sharp'?(lum==='dark'?'sharp-dark':'sharp'):(lum==='dark'?'dark':'base');
+  document.querySelectorAll('[data-den]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.den===den));
+  document.querySelectorAll('[data-lum]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.lum===lum));
+  try{LS.mui=R.dataset.t}catch{}; requestAnimationFrame(drawAll)};
+const cur=()=>({den:R.dataset.t.startsWith('sharp')?'sharp':'base',lum:R.dataset.t.endsWith('dark')?'dark':'light'});
+try{if(LS.mui){R.dataset.t=LS.mui;const c=cur();setT(c.den,c.lum)}}catch{}
+addEventListener('click',e=>{const d=e.target.closest('[data-den]'),l=e.target.closest('[data-lum]');if(d)setT(d.dataset.den,cur().lum);if(l)setT(cur().den,l.dataset.lum);
+  const s=e.target.closest('.seg button');if(s&&!d&&!l){s.parentElement.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b===s))}
+  const t=e.target.closest('[role=tab]');if(t){t.parentElement.querySelectorAll('[role=tab]').forEach(b=>b.setAttribute('aria-selected',b===t))}});
+matteSw.onchange=()=>document.querySelectorAll('[data-matte]').forEach(c=>c.classList.toggle('matte',matteSw.checked));
+
+// ---------- data ----------
+let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+const series=(n,start,vol,drift=0)=>{let v=start;const a=[];for(let i=0;i<n;i++){v*=1+(rnd()-.5)*vol+drift;a.push(v)}return a};
+const fmt=(n,d=2)=>n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+const cpt=n=>n>=1e9?'$'+(n/1e9).toFixed(1)+'B':n>=1e6?'$'+(n/1e6).toFixed(1)+'M':n>=1e3?'$'+(n/1e3).toFixed(1)+'K':'$'+n.toFixed(0);
+const pct=n=>(n>0?'+':'')+n.toFixed(2)+'%';
+const dir=n=>Math.abs(n)<.05?'flat':n>0?'up':'down';
+const arrow=n=>dir(n)==='up'?'▲':dir(n)==='down'?'▼':'–';
+const days=(n)=>{const a=[],d=new Date(2026,8,14);for(let i=n-1;i>=0;i--){const x=new Date(d);x.setDate(d.getDate()-i);a.push(x)}return a};
+const dl=d=>d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+
+// ---------- chart engine ----------
+const NS='http://www.w3.org/2000/svg',el=(t,a={})=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e};
+const nice=(lo,hi,n=4)=>{const r=hi-lo||1,s=Math.pow(10,Math.floor(Math.log10(r/n))),m=[1,2,2.5,5,10].find(m=>r/(s*m)<=n)*s;const a=[];for(let v=Math.floor(lo/m)*m;v<=hi+1e-9;v+=m)a.push(+v.toFixed(10));return a};
+function tableView(host,cols,rows){let d=host.parentElement.querySelector('details.tv');if(!d){d=document.createElement('details');d.className='tv';d.innerHTML='<summary>Table view</summary>';host.after(d)}
+  d.querySelector('table')?.remove();const t=document.createElement('table'),h=t.createTHead().insertRow();cols.forEach(c=>{const th=document.createElement('th');th.textContent=c;h.append(th)});const b=t.createTBody();rows.forEach(r=>{const tr=b.insertRow();r.forEach(v=>{tr.insertCell().textContent=v})});d.append(t)}
+function lineChart(host,{x,series:S,fmtY=v=>fmt(v,0),area=true,W=640,H=220}){host.replaceChildren();const P={l:44,r:12,t:12,b:24},w=W-P.l-P.r,h=H-P.t-P.b;
+  const all=S.flatMap(s=>s.d),ticks=nice(Math.min(...all),Math.max(...all)),lo=ticks[0],hi=ticks.at(-1);
+  const X=i=>P.l+i/(x.length-1)*w,Y=v=>P.t+h-(v-lo)/(hi-lo)*h;
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'Line chart'}),g=el('g',{class:'grid'});
+  ticks.forEach(t=>{g.append(el('line',{x1:P.l,x2:W-P.r,y1:Y(t),y2:Y(t)}));const tx=el('text',{x:P.l-6,y:Y(t)+4,'text-anchor':'end'});tx.textContent=fmtY(t);svg.append(tx)});svg.append(g);
+  const nx=Math.min(6,x.length);for(let k=0;k<nx;k++){const i=Math.round(k*(x.length-1)/(nx-1));const tx=el('text',{x:X(i),y:H-6,'text-anchor':k===0?'start':k===nx-1?'end':'middle'});tx.textContent=dl(x[i]);svg.append(tx)}
+  S.forEach(s=>{const d=s.d.map((v,i)=>`${i?'L':'M'}${X(i).toFixed(1)} ${Y(v).toFixed(1)}`).join('');
+    if(area)svg.append(el('path',{class:'ar',d:d+`L${X(s.d.length-1)} ${Y(lo)}L${X(0)} ${Y(lo)}Z`,fill:s.c}));
+    svg.append(el('path',{class:'ln',d,stroke:s.c}));svg.append(el('circle',{class:'dot',cx:X(s.d.length-1),cy:Y(s.d.at(-1)),r:4,fill:s.c}))});
+  const xh=el('line',{class:'xh',y1:P.t,y2:P.t+h,x1:X(0),x2:X(0)});svg.append(xh);
+  const dots=S.map(s=>{const c=el('circle',{class:'dot',r:4,fill:s.c,opacity:0});svg.append(c);return c});
+  const hit=el('rect',{class:'hit',x:P.l,y:P.t,width:w,height:h});svg.append(hit);host.append(svg);
+  const tip=document.createElement('div');tip.className='ctip';host.append(tip);
+  const show=i=>{host.classList.add('on');xh.setAttribute('x1',X(i));xh.setAttribute('x2',X(i));dots.forEach((c,k)=>{c.setAttribute('cx',X(i));c.setAttribute('cy',Y(S[k].d[i]));c.setAttribute('opacity',1)});
+    tip.replaceChildren();const t=document.createElement('div');t.textContent=dl(x[i]);t.style.opacity=.7;tip.append(t);S.forEach(s=>{const r=document.createElement('div'),i2=document.createElement('i');i2.style.setProperty('--k',s.c);const b=document.createElement('b');b.textContent=fmtY(s.d[i]);r.append(i2,b,document.createTextNode(' '+s.n));tip.append(r)});
+    const bb=host.getBoundingClientRect();tip.style.left=(X(i)/W*bb.width)+'px';tip.style.top=(Y(Math.max(...S.map(s=>s.d[i])))/H*bb.height)+'px'};
+  hit.addEventListener('pointermove',e=>{const bb=svg.getBoundingClientRect();const px=(e.clientX-bb.left)/bb.width*W;show(Math.max(0,Math.min(x.length-1,Math.round((px-P.l)/w*(x.length-1)))))});
+  hit.addEventListener('pointerleave',()=>{host.classList.remove('on');dots.forEach(c=>c.setAttribute('opacity',0))});
+  tableView(host,['Date',...S.map(s=>s.n)],x.map((d,i)=>[dl(d),...S.map(s=>fmtY(s.d[i]))]))}
+function barChart(host,{x,series:S,fmtY=v=>cpt(v),W=640,H=200}){host.replaceChildren();const P={l:44,r:8,t:12,b:24},w=W-P.l-P.r,h=H-P.t-P.b;
+  const ticks=nice(0,Math.max(...S.flatMap(s=>s.d))),hi=ticks.at(-1),Y=v=>P.t+h-v/hi*h,slot=w/x.length,bw=Math.min(24,(slot-4)/S.length-2);
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'Bar chart'}),g=el('g',{class:'grid'});
+  ticks.forEach(t=>{g.append(el('line',{x1:P.l,x2:W-P.r,y1:Y(t),y2:Y(t)}));const tx=el('text',{x:P.l-6,y:Y(t)+4,'text-anchor':'end'});tx.textContent=fmtY(t);svg.append(tx)});svg.append(g);
+  const tip=document.createElement('div');tip.className='ctip';
+  x.forEach((d,i)=>{S.forEach((s,k)=>{const v=s.d[i],x0=P.l+i*slot+(slot-(bw+2)*S.length)/2+k*(bw+2),y0=Y(v),r=Math.min(4,bw/2);
+    const p=el('path',{class:'bar',fill:s.c,d:`M${x0} ${P.t+h}V${y0+r}q0 -${r} ${r} -${r}h${bw-2*r}q${r} 0 ${r} ${r}V${P.t+h}Z`});
+    p.addEventListener('pointerenter',()=>{host.classList.add('on');tip.replaceChildren();const t=document.createElement('div');t.textContent=dl(d);t.style.opacity=.7;const b=document.createElement('b');b.textContent=fmtY(v);tip.append(t,b,document.createTextNode(' '+s.n));const bb=host.getBoundingClientRect();tip.style.left=((x0+bw/2)/W*bb.width)+'px';tip.style.top=(y0/H*bb.height)+'px'});
+    p.addEventListener('pointerleave',()=>host.classList.remove('on'));svg.append(p)});
+    if(i%2===0){const tx=el('text',{x:P.l+i*slot+slot/2,y:H-6,'text-anchor':'middle'});tx.textContent=dl(d);svg.append(tx)}});
+  host.append(svg,tip);tableView(host,['Date',...S.map(s=>s.n)],x.map((d,i)=>[dl(d),...S.map(s=>fmtY(s.d[i]))]))}
+function spark(d,c='var(--c1)'){const W=80,H=24,lo=Math.min(...d),hi=Math.max(...d);const p=d.map((v,i)=>`${i?'L':'M'}${(i/(d.length-1)*W).toFixed(1)} ${(H-2-(v-lo)/(hi-lo||1)*(H-4)).toFixed(1)}`).join('');return `<svg class=spark viewBox="0 0 ${W} ${H}" aria-hidden=true><path d="${p}" stroke="${c}"/></svg>`}
+function histChart(host,{bins,lo,hi,cur,W=640,H=180,invert=false}){host.replaceChildren();const P={l:8,r:8,t:8,b:22},w=W-P.l-P.r,h=H-P.t-P.b,n=bins.length,max=Math.max(...bins.map(b=>b.l));
+  const svg=el('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'Liquidity distribution'}),bw=w/n-2;
+  const px=p=>P.l+(bins.findIndex(b=>b.p>=p)/n)*w;const tip=document.createElement('div');tip.className='ctip';
+  bins.forEach((b,i)=>{const inR=b.p>=lo&&b.p<=hi,x0=P.l+i*(w/n),y0=P.t+h-b.l/max*h;const p=el('path',{class:'bar',fill:inR?'var(--c1)':'var(--n4)',opacity:inR?1:.6,d:`M${x0} ${P.t+h}V${y0+2}q0 -2 2 -2h${bw-4}q2 0 2 2V${P.t+h}Z`});
+    p.addEventListener('pointerenter',()=>{host.classList.add('on');tip.replaceChildren();const s=document.createElement('b');s.textContent=cpt(b.l*1e4)+' liquidity';tip.append(s,document.createTextNode(' at '+fmt(invert?1/b.p*1e9:b.p,0)));const bb=host.getBoundingClientRect();tip.style.left=((x0+bw/2)/W*bb.width)+'px';tip.style.top=(y0/H*bb.height)+'px'});p.addEventListener('pointerleave',()=>host.classList.remove('on'));svg.append(p)});
+  svg.append(el('line',{class:'cur',x1:px(cur),x2:px(cur),y1:P.t,y2:P.t+h}));[[lo,'start'],[hi,'end']].forEach(([v,a])=>{const t=el('text',{x:px(v),y:H-6,'text-anchor':a});t.textContent=(v===lo?'min ':'max ')+fmt(v,0);svg.append(t)});const ct=el('text',{class:'lab',x:px(cur)+4,y:P.t+10,'text-anchor':'start'});ct.textContent='now '+fmt(cur,0);svg.append(ct);
+  host.append(svg,tip)}
+
+// ---------- markets ----------
+const MK=[['BTC','MUSD',.05,10,'CL',87069],['BTC','USDC',.05,10,'CL',87102],['BTC','USDT',.3,60,'CL',87088],['USDT','USDC',.01,1,'Stable',1.0002],['MUSD','USDC',.01,1,'Stable',.9994],['ETH','USDC',.05,10,'CL',4210.5],['ETH','BTC',.3,60,'CL',.04836],['tBTC','BTC',.01,1,'Stable',.9991],['stBTC','BTC',.05,10,'CL',1.0031],['pegEUR','USDC',.01,1,'Stable',1.0842],['pegJPY','USDC',.01,1,'Stable',.006712],['SOL','USDC',.3,60,'CL',188.4]];
+const KC={BTC:'#f7931a',MUSD:'#e33d5c',USDC:'#2775ca',USDT:'#26a17b',ETH:'#627eea',tBTC:'#0d1117',stBTC:'#8b5cf6',pegEUR:'#0d9488',pegJPY:'#b45309',SOL:'#14f195'};
+const tk=(a,b,lg)=>`<span class="tk${lg?' lg':''}"><i style="--k:${KC[a]||'#64748b'}">${a[0]}</i>${b?`<i style="--k:${KC[b]||'#64748b'}">${b[0]}</i>`:''}</span>`;
+const M=MK.map(([a,b,fee,ts,kind,price])=>{const d24=(rnd()-.45)*4,sp=series(24,price,.02),vol=rnd()*4e6+2e5,tvl=vol*(2+rnd()*8);return{pair:`${a}/${b}`,a,b,fee,ts,kind,price,d24,sp,vol,tvl,apr:kind==='Stable'?rnd()*6+1:rnd()*28+4}});
+let sortK='apr',sortD=-1;
+function drawMkt(){const q=mktFilter.value.toLowerCase(),kind=[...mktKind.children].find(b=>b.getAttribute('aria-pressed')==='true').textContent;
+  const rows=M.filter(m=>m.pair.toLowerCase().includes(q)&&(kind==='All'||m.kind===kind)).sort((x,y)=>(x[sortK]>y[sortK]?1:-1)*sortD);
+  mkt.tBodies[0].innerHTML=rows.map(m=>`<tr><td><div class=row style="gap:.5rem">${tk(m.a,m.b)}<div><b>${m.pair}</b><div class="xs muted">${m.kind}</div></div></div></td><td class=r>${fmt(m.price,m.price<1?4:2)}</td><td class=r><span class=delta data-d=${dir(m.d24)}>${arrow(m.d24)} ${pct(m.d24)}</span></td><td class=r>${spark(m.sp,dir(m.sp.at(-1)-m.sp[0])==='down'?'var(--no-f)':'var(--ok-f)')}</td><td class=r>${cpt(m.vol)}</td><td class=r>${cpt(m.tvl)}</td><td class=r><b>${m.apr.toFixed(1)}%</b></td><td class="r muted">${m.fee}% / ${m.ts}</td></tr>`).join('');
+  mkt.querySelectorAll('th[data-k]').forEach(th=>th.dataset.k===sortK?th.setAttribute('aria-sort',sortD>0?'ascending':'descending'):th.removeAttribute('aria-sort'))}
+mkt.addEventListener('click',e=>{const th=e.target.closest('th[data-k]');if(!th)return;if(sortK===th.dataset.k)sortD*=-1;else{sortK=th.dataset.k;sortD=-1}drawMkt()});
+mktFilter.oninput=drawMkt;mktKind.onclick=()=>requestAnimationFrame(drawMkt);
+
+// ---------- kpis ----------
+const K=[['TVL','$18.4M',3.1,series(12,100,.03,.003)],['Volume 24h','$2.13M',-0.8,series(12,100,.08)],['Fees 24h','$1,065',12.4,series(12,100,.08,.01)],['Active positions','1,284',0.0,series(12,100,.01)]];
+kpis.innerHTML=K.map(([l,v,d,s])=>`<div class="card stat"><span class=l>${l}</span><span class=v>${v}</span><span class=delta data-d=${dir(d)}>${arrow(d)} ${pct(d)} <span class="muted" style="font-weight:400">vs 24h ago</span></span>${spark(s,'var(--fg3)')}</div>`).join('');
+
+// ---------- performance ----------
+const PD={pool:{lbl:'Pool · BTC/MUSD 0.05%',d:series(90,100,.025,.0018),h:series(90,100,.03,.0009),f:v=>fmt(v,1),unit:'index'},asset:{lbl:'Asset · BTC',d:series(90,79000,.03,.0011),h:series(90,79000,.03,.0011),f:v=>'$'+fmt(v,0)},vault:{lbl:'Vault · BTC Meta-Vault NAV',d:series(90,1,.006,.0009),h:series(90,1,.03,.0004),f:v=>fmt(v,4)}};
+let pe='pool',pr=7;
+function drawPerf(){const p=PD[pe],n=pr,x=days(n),d=p.d.slice(-n),hd=p.h.slice(-n),S=[{n:'Strategy',d,c:'var(--c1)'}];if(perfCmp.checked)S.push({n:'HODL',d:hd,c:'var(--c2)'});perfLegend.hidden=!perfCmp.checked;
+  perfLbl.textContent=p.lbl;perfHero.textContent=p.f(d.at(-1));const ch=(d.at(-1)/d[0]-1)*100;perfDelta.dataset.d=dir(ch);perfDelta.textContent=`${arrow(ch)} ${pct(ch)} · ${n}d`;
+  lineChart(perf,{x,series:S,fmtY:p.f})}
+perfEnt.onclick=e=>{const b=e.target.closest('[data-e]');if(b){pe=b.dataset.e;requestAnimationFrame(drawPerf)}};perfRange.onclick=e=>{const b=e.target.closest('[data-r]');if(b){pr=+b.dataset.r;requestAnimationFrame(drawPerf)}};perfCmp.onchange=drawPerf;
+const VX=days(14),VV=series(14,1.8e6,.35),VF=VV.map(v=>v*.0005*100);
+function drawVol(){barChart(vol,{x:VX,series:[{n:'Volume',d:VV,c:'var(--c1)'},{n:'Fees ×100',d:VF,c:'var(--c3)'}]});volAvg.textContent=cpt(VV.reduce((a,b)=>a+b)/14)}
+
+// ---------- pools & positions ----------
+pools.innerHTML=M.slice(0,5).map(m=>`<a href="#cl">${tk(m.a,m.b,1)}<div class=grow><h4>${m.pair}</h4><p class="xs muted">${m.fee}% · tick ${m.ts} · ${m.kind}</p></div><div style="text-align:right"><b class=num>${m.apr.toFixed(1)}%</b><p class="xs muted">APR 7d</p></div></a>`).join('');
+positions.innerHTML=[['BTC','MUSD',1,'ok','In range'],['BTC','USDC',2,'wa','Near edge'],['ETH','USDC',3,'no','Out of range']].map(([a,b,i,v,s])=>`<a href="#cl">${tk(a,b,1)}<div class=grow><h4>${a}/${b}</h4><p class="xs muted">Fee 0.05% · Pos #${i}</p></div><span class="pill xs" data-v=${v}>● ${s}</span></a>`).join('');
+
+// ---------- CL manager ----------
+const BINS=Array.from({length:48},(_,i)=>{const p=60000+i*2500,d=Math.abs(p-87069)/9000;return{p,l:Math.exp(-d*d)*100+rnd()*8+2}});
+const num=s=>+String(s).replace(/[^0-9.]/g,'');let lo=85000,hi=150000;
+const tick=p=>Math.round(Math.log(p)/Math.log(1.0001));
+function drawHist(){histChart(hist,{bins:BINS,lo,hi,cur:87069,invert:invert.checked});tickLo.textContent=tick(lo);tickHi.textContent=tick(hi)}
+minP.onchange=()=>{lo=num(minP.value)||lo;minP.value=fmt(lo,0);drawHist()};maxP.onchange=()=>{hi=num(maxP.value)||hi;maxP.value=fmt(hi,0);drawHist()};invert.onchange=drawHist;
+document.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>{const k=b.dataset.st,step=2500*+b.dataset.dir;if(k==='minP')lo=Math.max(60000,Math.min(hi-2500,lo+step));else hi=Math.max(lo+2500,Math.min(177500,hi+step));minP.value=fmt(lo,0);maxP.value=fmt(hi,0);drawHist()});
+const panes=[...clSide.querySelectorAll('[data-pane]')],modeBtns=[...clMode.children];
+const go=i=>{panes.forEach((p,k)=>p.hidden=k!==i);modeBtns.forEach((b,k)=>b.setAttribute('aria-pressed',k===i))};
+clMode.onclick=e=>{const b=e.target.closest('button');if(b)go(modeBtns.indexOf(b))};clSide.onclick=e=>{const b=e.target.closest('[data-go]');if(b)go(+b.dataset.go)};
+qp.onclick=e=>{const b=e.target.closest('button');if(!b)return;[...qp.children].forEach(x=>x.setAttribute('aria-pressed',x===b));rmPct.value=b.textContent;setRm(num(b.textContent))};
+rmPct.onchange=()=>{const v=Math.max(0,Math.min(100,num(rmPct.value)));rmPct.value=v+'%';[...qp.children].forEach(x=>x.setAttribute('aria-pressed',num(x.textContent)===v));setRm(v)};
+const setRm=v=>rmAmt.textContent=`${(0.01614*v/100).toFixed(5)} BTC · ${fmt(200*v/100,0)} MUSD`;
+addBtc.oninput=()=>addMusd.value=fmt(num(addBtc.value)*87069*62/38/1,2);addMusd.oninput=()=>addBtc.value=(num(addMusd.value)/87069*38/62).toFixed(5);
+
+// ---------- base interactions ----------
+payAmt.oninput=()=>{const v=num(payAmt.value)||0;payUsd.textContent='$'+fmt(v);payBtn.textContent='Send $'+fmt(v)};payMax.onclick=()=>{payAmt.value='12400';payAmt.dispatchEvent(new Event('input'))};
+slip.oninput=()=>slipV.textContent=(+slip.value).toFixed(1)+'%';
+const TOK=[['BTC','Bitcoin','0.4210'],['USDC','USD Coin','12,400.00'],['MUSD','Mezo USD','2,130.00'],['ETH','Ether','3.02'],['tBTC','Threshold BTC','0.0000'],['stBTC','Staked BTC','0.1000'],['pegEUR','Peg Euro','0.00']];
+const drawTok=q=>dlgList.innerHTML=TOK.filter(t=>(t[0]+t[1]).toLowerCase().includes(q)).map(t=>`<button class=row style="width:100%;padding:.5rem 0">${tk(t[0])}<div class="grow" style="text-align:left"><b>${t[0]}</b><div class="xs muted">${t[1]}</div></div><span class=num>${t[2]}</span></button>`).join('')||'<div class=empty><p>No token found</p></div>';
+openDlg.onclick=()=>{drawTok('');dlgQ.value='';dlg.showModal()};closeDlg.onclick=()=>dlg.close();dlgQ.oninput=()=>drawTok(dlgQ.value.toLowerCase());dlgList.onclick=e=>{if(e.target.closest('button'))dlg.close()};
+const place=(pop,btn,below=true)=>{const b=btn.getBoundingClientRect();pop.style.position='fixed';pop.style.left=Math.min(b.left,innerWidth-pop.offsetWidth-8)+'px';pop.style.top=(below?b.bottom+6:b.top-pop.offsetHeight-6)+'px'};
+menu1.addEventListener('toggle',e=>e.newState==='open'&&place(menu1,menuBtn));tip1.addEventListener('toggle',e=>e.newState==='open'&&place(tip1,tipBtn));
+addEventListener('pointerdown',e=>{for(const p of document.querySelectorAll('[popover]:popover-open'))if(!p.contains(e.target)&&!e.target.closest('[popovertarget]'))p.hidePopover()});
+tipBtn.onmouseenter=()=>tip1.showPopover();tipBtn.onmouseleave=()=>tip1.hidePopover();
+let tt;toastBtn.onclick=payBtn.onclick=()=>{toast.hidden=false;clearTimeout(tt);tt=setTimeout(()=>toast.hidden=true,3000)};
+
+// ---------- web component ----------
+customElements.define('mui-stat',class extends HTMLElement{connectedCallback(){const d=parseFloat(this.getAttribute('delta').replace('−','-'))||0;this.attachShadow({mode:'open'}).innerHTML=`<style>:host{display:flex;flex-direction:column;gap:.125rem;padding:calc(.75rem*var(--sp,1.5));border:1px solid var(--n3);border-radius:var(--r3);background:var(--n0);min-width:8rem}.l{font-size:.75rem;color:var(--fg3);font-weight:500}.v{font-size:1.375rem;font-weight:600;letter-spacing:-.02em}.d{font-size:.75rem;font-weight:600;color:${d>0?'var(--ok-f)':d<0?'var(--no-f)':'var(--fg3)'}}</style><span class=l></span><span class=v></span><span class=d></span>`;
+  this.shadowRoot.querySelector('.l').textContent=this.getAttribute('label');this.shadowRoot.querySelector('.v').textContent=this.getAttribute('value');this.shadowRoot.querySelector('.d').textContent=(d>0?'▲ ':d<0?'▼ ':'– ')+this.getAttribute('delta')}});
+
+// ---------- draw ----------
+function drawAll(){drawMkt();drawPerf();drawVol();drawHist()}
+drawAll();
+bytes.textContent=`This document: ${fmt(document.documentElement.outerHTML.length/1024,1)} KB raw. Measure brotli with reference/p0/measure.js.`;
+</script>
