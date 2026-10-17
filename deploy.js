@@ -1,6 +1,7 @@
 // deploy.js — publish the μi design language site
 //   /design/        preview.html — the design philosophy and the live recipe gallery (hand-authored, one file)
 //   /design/paper/  paper.html   — ui-whitepaper.md rendered by paper.js, tokens lifted from preview.html
+//   /design/blocks/ blocks.html  — the ten view blocks in variants, rendered by blocks.js, with the review loop
 //   /design/app/    dist/        — the μApp starter, built with BASE=/design/app so its island map is rebased
 //   decouple.co is a GitHub Pages *project* site: repo decoupleco/decouple.co, branch gh-pages, CNAME decouple.co.
 //   Project repos are not mounted under that domain (no decoupleco.github.io org site exists), so /design/
@@ -17,13 +18,15 @@ const run = (cmd, opts = {}) => { const p = Bun.spawnSync(cmd, { stdout: 'inheri
 run(['bun', './build.js'], { env: { ...process.env, BASE: '/design/app' } });
 run(['bun', 'run', 'gate']);
 run(['bun', './paper.js']);
+run(['bun', './blocks.js']);
 
 rmSync(WT, { recursive: true, force: true });
 run(['git', 'clone', '--depth', '1', '--branch', 'gh-pages', REPO, WT]);
 rmSync(`${WT}/design`, { recursive: true, force: true });
-mkdirSync(`${WT}/design/app`, { recursive: true }); mkdirSync(`${WT}/design/paper`, { recursive: true });
+for (const d of ['app', 'paper', 'blocks']) mkdirSync(`${WT}/design/${d}`, { recursive: true });
 run(['cp', 'preview.html', `${WT}/design/index.html`]);
 run(['cp', 'paper.html', `${WT}/design/paper/index.html`]);
+run(['cp', 'blocks.html', `${WT}/design/blocks/index.html`]);
 run(['cp', '-R', 'dist/.', `${WT}/design/app/`]);
 if (!existsSync(`${WT}/.nojekyll`)) await Bun.write(`${WT}/.nojekyll`, '');
 run(['git', '-C', WT, 'add', '-A', 'design', '.nojekyll']);

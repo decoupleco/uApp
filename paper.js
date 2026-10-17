@@ -149,7 +149,7 @@ body{hanging-punctuation:first allow-end;font-optical-sizing:auto}
 
 <header class=top><div class=in>
 <div class=brand>μi <span>the paper</span></div>
-<nav><a href="../">Design language</a><a href="../app/">μApp demo ↗</a></nav>
+<nav><a href="../">Design language</a><a href="../blocks/">Blocks</a><a href="../app/">μApp demo ↗</a></nav>
 <div class=seg role=group aria-label=Density style="margin-inline-start:auto"><button data-den=base aria-pressed=true>Base</button><button data-den=sharp>Sharp</button></div>
 <div class=seg role=group aria-label=Luminance><button data-lum=light aria-pressed=true>Light</button><button data-lum=dark>Dark</button></div>
 </div></header>
