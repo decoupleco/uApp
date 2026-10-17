@@ -474,6 +474,23 @@ knob makes no difference above 2020, and P0 is unaffected at any level — its i
 `gates/syntax.js` now enforces this rather than asserting it: it fails on ES2022+ syntax or APIs as well as on
 any CommonJS marker. Verified live — bumping the target to es2022 turns it red on the private class fields.
 
+### Theme re-cut (2026-10-17)
+
+The desaturated palette of 2026-09-14 overshot: it removed chroma everywhere, when the problem was *hue in the
+neutrals*. Four reviewers (one each against shadcn/ui, Tenor, Monarch and the Morpho app — the measured
+palettes are in this session's scratchpad) converged independently on the same three moves, each verified
+through the gate before being merged: paper and text carry the warmth, intents get their chroma back with
+contrast coming from darkness, and only `--ac` is ever a fill. Two token-chip colours were added — `--tb`
+(base, azure) and `--tq` (quote, mint) with `-b` rings so pastel discs do not float on white — and `--ok`
+leans teal so a filled badge never reads as a quote chip. 88 gated pairs across both palette sources,
+worst **5.10** (was 4.63); `gates/contrast.js` now reads p0.css *and* preview.html and fails if they differ.
+
+**Base** is the reading theme: 17 px/1.6 (peg.markets is 17/1.6, Tenor's home 18/1.55), warm near-white
+paper, raised cards, pastel intent surfaces. **Sharp inherits Base** — same palette, same faces — and adds an
+outline layer: transparent cards and panels with hairline borders, outlined pills and buttons with `[data-p]`
+the only fill, chart areas drawn as strokes, chips as outlined circles, monospace tabular slashed-zero
+numerals, 11 px tracked labels, radii at .25 rem. P0 cost of the layer and the four tokens: +330 B (4,204 B).
+
 ### Deployment
 
 `deploy.js` publishes the design site to **https://decouple.co/design/**:

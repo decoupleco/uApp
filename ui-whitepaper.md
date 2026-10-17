@@ -144,7 +144,7 @@ The earlier "monochrome, green/red only" rule was retired for a specific reason:
 
 ### 3.3 Contrast is a build-time property (Rule 3)
 
-Every text container sits on an **opaque** surface token. A translucent panel's contrast depends on its backdrop, so it cannot be verified without enumerating every backdrop; an opaque token has one ratio. All 19 text/surface pairs in the reference theme pass 4.5:1 in both luminances. *(Erratum, measured 2026-09-14: with the hex that actually shipped, `--fg3` light failed on `--n2` (4.34), `--ac-s` (4.37) and `--no-s` (4.35) — `contrast.mjs` had been run against `#5f6b7d`, not the shipped `#64748b`. `--fg3` light is now `#5f6b7d`; worst pair 4.93. `gates/contrast.js` parses the shipped CSS, and covers 40 pairs.)*
+Every text container sits on an **opaque** surface token. A translucent panel's contrast depends on its backdrop, so it cannot be verified without enumerating every backdrop; an opaque token has one ratio. All 19 text/surface pairs in the reference theme pass 4.5:1 in both luminances. *(Erratum, measured 2026-09-14: with the hex that actually shipped, `--fg3` light failed on `--n2` (4.34), `--ac-s` (4.37) and `--no-s` (4.35) — `contrast.mjs` had been run against `#5f6b7d`, not the shipped `#64748b`. `--fg3` light is now `#5f6b7d`; worst pair 4.93. `gates/contrast.js` parses the shipped CSS, and covers 40 pairs.)* *(Re-cut 2026-10-17 after four independent reviews against shadcn, Tenor, Monarch and Morpho: hue-free paper, chroma restored to the intents with contrast taken from lightness rather than desaturation, and two token-chip colours — base blue `--tb`, quote green `--tq`. 88 pairs across both palette sources, worst 5.10. Base is 17 px/1.6 on warm paper; Sharp inherits it and adds an outline layer.)*
 
 One import trap, measured: `slate-400` on white is **2.56:1** and fails AA. It was the single most-used color in the withdrawal UI we liked (eyebrow labels, upcoming timeline states). μi uses a hand-darkened slate, `#5f6b7d` (5.05:1 on white), for the same role, which is `--fg3`. *(was `slate-500` `#64748b`, 4.76:1 on white but below 4.5:1 on `--n2`/`--ac-s`/`--no-s`; corrected 2026-09-14.)*
 
@@ -377,14 +377,16 @@ The `@layer theme` block from `reference/p0/index.html`, 5,016 B raw CSS for the
 
 ```css
 :root{color-scheme:light;
-  --n0:light-dark(#fff,#020617);--n1:light-dark(#f8fafc,#0f172a);--n2:light-dark(#f1f5f9,#1e293b);
-  --n3:light-dark(#e2e8f0,#334155);--n4:light-dark(#cbd5e1,#475569);
-  --fg:light-dark(#020617,#f8fafc);--fg2:light-dark(#475569,#cbd5e1);--fg3:light-dark(#5f6b7d,#94a3b8);
-  --ac-s:light-dark(#eff6ff,#172554);--ac-b:light-dark(#bfdbfe,#1e40af);--ac-r:light-dark(#dbeafe,#1e3a8a);
-  --ac-f:light-dark(#1d4ed8,#93c5fd);--ac:light-dark(#2563eb,#3b82f6);--on-ac:light-dark(#fff,#020617);
-  --ok-s:light-dark(#ecfdf5,#022c22);--ok-b:light-dark(#a7f3d0,#065f46);--ok-f:light-dark(#047857,#6ee7b7);
-  --wa-s:light-dark(#fffbeb,#451a03);--wa-b:light-dark(#fde68a,#92400e);--wa-f:light-dark(#b45309,#fcd34d);
-  --no-s:light-dark(#fef2f2,#450a0a);--no-b:light-dark(#fecaca,#991b1b);--no-f:light-dark(#b91c1c,#fca5a5);
+  --n0:light-dark(#ffffff,#15161a);--n1:light-dark(#faf8f4,#0b0c0f);--n2:light-dark(#f3efe7,#1d1f24);
+  --n3:light-dark(#e6e0d5,#2c2f36);--n4:light-dark(#cfc6b8,#42464f);
+  --fg:light-dark(#1d1915,#ebe9e4);--fg2:light-dark(#4e4740,#b8b4ad);--fg3:light-dark(#6a6158,#9e9a91);
+  --ac-s:light-dark(#e4edfc,#182a48);--ac-b:light-dark(#adc5f0,#2f4d84);--ac-r:light-dark(#c7d9f8,#27437a);
+  --ac-f:light-dark(#1f4fb5,#a9c9fa);--ac:light-dark(#2d62cc,#86abec);--on-ac:light-dark(#ffffff,#0b1428);
+  --ok-s:light-dark(#dcf3ea,#122b24);--ok-b:light-dark(#9fdcc6,#1f5a4a);--ok-f:light-dark(#0f6f52,#6fd9b4);
+  --wa-s:light-dark(#fdf0d5,#2e2210);--wa-b:light-dark(#f1d48a,#6a4a14);--wa-f:light-dark(#845000,#f0c46a);
+  --tb:light-dark(#c7dcff,#8db8ff);--on-tb:light-dark(#0f3a8f,#071a40);--tb-b:light-dark(#8fb5f5,#5a8de0);
+  --tq:light-dark(#c3f0d4,#8be0ae);--on-tq:light-dark(#0f5a32,#06301a);--tq-b:light-dark(#7fd3a0,#4fb37d);
+  --no-s:light-dark(#fde7e5,#311616);--no-b:light-dark(#f2b7b3,#733030);--no-f:light-dark(#b82f28,#f3a3a0);
   --r1:.5rem;--r2:.75rem;--r3:1rem;--r4:1.5rem;--rf:9999px;
   --sh:0 1px 2px light-dark(#0f172a14,#0000004d);
   --ff:system-ui,sans-serif;--fm:ui-monospace,SFMono-Regular,monospace;

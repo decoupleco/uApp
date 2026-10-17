@@ -164,7 +164,16 @@ const BLOCKS = [
 ];
 
 // ---------- page ----------
-const layer = name => { const start = preview.indexOf(`@layer ${name}{`); let depth = 1, j = start + `@layer ${name}{`.length; while (j < preview.length && depth) { if (preview[j] === '{') depth++; else if (preview[j] === '}') depth--; j++; } return preview.slice(start, j); };
+const layer = name => {                      // every @layer <name>{…} block in the gallery, concatenated
+  const out = []; let from = 0;
+  for (;;) {
+    const start = preview.indexOf(`@layer ${name}{`, from); if (start < 0) break;
+    let depth = 1, j = start + `@layer ${name}{`.length;
+    while (j < preview.length && depth) { if (preview[j] === '{') depth++; else if (preview[j] === '}') depth--; j++; }
+    out.push(preview.slice(start, j)); from = j;
+  }
+  return out.join('\n');
+};
 const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 const blockHtml = (b, n) => `<section class=block id="${b.id}">
@@ -242,7 +251,7 @@ ${BLOCKS.map(blockHtml).join('\n')}
 <script type=module>
 const r=document.documentElement, KEY='mui.blocks.r1';
 const S=()=>{try{return JSON.parse(localStorage.mui||'{}')}catch{return{}}};
-const apply=s=>{const d=s.den||'base',l=s.lum||'light';r.dataset.t=(d==='sharp'?'sharp':'base')+(l==='dark'?'-dark':'');
+const apply=s=>{const d=s.den||'base',l=s.lum||'light';r.dataset.t=d==='sharp'?(l==='dark'?'sharp-dark':'sharp'):(l==='dark'?'dark':'base');
   for(const b of document.querySelectorAll('[data-den]'))b.setAttribute('aria-pressed',b.dataset.den===d);
   for(const b of document.querySelectorAll('[data-lum]'))b.setAttribute('aria-pressed',b.dataset.lum===l)};
 let s=S();apply(s);

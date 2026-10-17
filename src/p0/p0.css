@@ -11,20 +11,22 @@ button{cursor:pointer}
 @layer theme{
 :root{
 color-scheme:light;
---n0:light-dark(#ffffff,#15161a);--n1:light-dark(#f7f6f4,#0b0c0f);--n2:light-dark(#efedea,#1d1f24);
---n3:light-dark(#e2dfda,#2a2d33);--n4:light-dark(#c9c5bd,#3e424a);
---fg:light-dark(#171614,#e9e8e4);--fg2:light-dark(#4b4843,#b3b0aa);--fg3:light-dark(#6d6961,#8d8a83);
---ac-s:light-dark(#eef1f6,#1a2231);--ac-b:light-dark(#c3cede,#31415c);--ac-r:light-dark(#dde4ee,#232e42);--ac-f:light-dark(#39547e,#a8c0e4);--ac:light-dark(#44618f,#7d9bc9);--on-ac:light-dark(#ffffff,#0d1016);
---ok-s:light-dark(#edf3ee,#152219);--ok-b:light-dark(#bcd6c2,#2c4636);--ok-f:light-dark(#3f6b4e,#8fc4a2);
---wa-s:light-dark(#f8f2e8,#241c10);--wa-b:light-dark(#e4d3ad,#4a3a1e);--wa-f:light-dark(#7d5c28,#d8b877);
---no-s:light-dark(#f8eeec,#241413);--no-b:light-dark(#e2c4bf,#4d2a26);--no-f:light-dark(#8f4038,#e0a098);
+--n0:light-dark(#ffffff,#15161a);--n1:light-dark(#faf8f4,#0b0c0f);--n2:light-dark(#f3efe7,#1d1f24);
+--n3:light-dark(#e6e0d5,#2c2f36);--n4:light-dark(#cfc6b8,#42464f);
+--fg:light-dark(#1d1915,#ebe9e4);--fg2:light-dark(#4e4740,#b8b4ad);--fg3:light-dark(#6a6158,#9e9a91);
+--ac-s:light-dark(#e4edfc,#182a48);--ac-b:light-dark(#adc5f0,#2f4d84);--ac-r:light-dark(#c7d9f8,#27437a);--ac-f:light-dark(#1f4fb5,#a9c9fa);--ac:light-dark(#2d62cc,#86abec);--on-ac:light-dark(#ffffff,#0b1428);
+--ok-s:light-dark(#dcf3ea,#122b24);--ok-b:light-dark(#9fdcc6,#1f5a4a);--ok-f:light-dark(#0f6f52,#6fd9b4);
+--wa-s:light-dark(#fdf0d5,#2e2210);--wa-b:light-dark(#f1d48a,#6a4a14);--wa-f:light-dark(#845000,#f0c46a);
+--no-s:light-dark(#fde7e5,#311616);--no-b:light-dark(#f2b7b3,#733030);--no-f:light-dark(#b82f28,#f3a3a0);
+--tb:light-dark(#c7dcff,#8db8ff);--on-tb:light-dark(#0f3a8f,#071a40);--tq:light-dark(#c3f0d4,#8be0ae);--on-tq:light-dark(#0f5a32,#06301a);
+--tb-b:light-dark(#8fb5f5,#5a8de0);--tq-b:light-dark(#7fd3a0,#4fb37d);
 --r1:.5rem;--r2:.75rem;--r3:1rem;--r4:1.5rem;--rf:9999px;
 --sh:0 1px 2px light-dark(#0f172a14,#0000004d);
 --ff:ui-sans-serif,system-ui,-apple-system,"Segoe UI Variable Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--fm:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Cascadia Mono","Liberation Mono",monospace;
---fs:1rem;--lh:1.6;--sp:1.5;
+--fs:1.0625rem;--lh:1.6;--sp:1.5;
 }
 :root:where([data-t=dark]){color-scheme:dark}
-:root:where([data-t=sharp],[data-t=sharp-dark]){--fs:.875rem;--lh:1.4;--sp:1;--ff:ui-sans-serif,system-ui,-apple-system,"Segoe UI Variable Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-variant-numeric:tabular-nums lining-nums;letter-spacing:-.01em}
+:root:where([data-t=sharp],[data-t=sharp-dark]){--fs:.875rem;--lh:1.45;--sp:1;--r1:.125rem;--r2:.25rem;--r3:.25rem;--r4:.375rem;--sh:none;--ff:ui-sans-serif,system-ui,-apple-system,"Segoe UI Variable Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-variant-numeric:tabular-nums lining-nums;letter-spacing:-.01em}
 :root:where([data-t=sharp-dark]){color-scheme:dark}
 }
 @layer base{
@@ -73,3 +75,18 @@ code,.mono,[data-mono]{font-family:var(--fm);font-variant-numeric:tabular-nums}
 }
 @layer comp{.chart{height:12rem}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@layer comp{
+/* Sharp inherits Base — same palette, same type family — and adds an outline / schematic character on top:
+   few colours, hairlines instead of fills, data-first numerals. Only [data-p] is ever a filled control. */
+:root:where([data-t=sharp],[data-t=sharp-dark]) .card{background:transparent;border:1px solid var(--n4);box-shadow:none}
+:root:where([data-t=sharp],[data-t=sharp-dark]) .panel{background:transparent;border-color:var(--b,var(--n4))}
+:root:where([data-t=sharp],[data-t=sharp-dark]) .pill{background:transparent;border:1px solid var(--b,var(--n4));color:var(--f,var(--fg2))}
+:root:where([data-t=sharp],[data-t=sharp-dark]) .btn{background:transparent;border:1px solid var(--n4)}
+:root:where([data-t=sharp],[data-t=sharp-dark]) .btn:hover{background:var(--n2)}
+:root:where([data-t=sharp],[data-t=sharp-dark]) .btn[data-p]{background:var(--ac);border-color:var(--ac);color:var(--on-ac)}
+:root:where([data-t=sharp],[data-t=sharp-dark]) .btn[data-v]{background:transparent;color:var(--f);border-color:var(--b)}
+:root:where([data-t=sharp],[data-t=sharp-dark]) .field{background:transparent;border-color:var(--n4)}
+:root:where([data-t=sharp],[data-t=sharp-dark]) .eyebrow{font-size:.6875rem;letter-spacing:.1em}
+:root:where([data-t=sharp],[data-t=sharp-dark]) .num,:root:where([data-t=sharp],[data-t=sharp-dark]) .kv dd{font-family:var(--fm);font-variant-numeric:tabular-nums slashed-zero lining-nums;font-size:.9375em}
+:root:where([data-t=sharp],[data-t=sharp-dark]) .meter{background:transparent;border:1px solid var(--n4)}
+}

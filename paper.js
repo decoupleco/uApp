@@ -86,11 +86,15 @@ for (let i = 0; i < lines.length; i++) {
 }
 
 // Lift @layer reset/theme/base out of preview.html: one palette, defined once.
-const layer = name => {
-  const start = preview.indexOf(`@layer ${name}{`);
-  let depth = 1, j = start + `@layer ${name}{`.length;
-  while (j < preview.length && depth) { if (preview[j] === '{') depth++; else if (preview[j] === '}') depth--; j++; }
-  return preview.slice(start, j);
+const layer = name => {                      // every @layer <name>{…} block in the gallery, concatenated
+  const out = []; let from = 0;
+  for (;;) {
+    const start = preview.indexOf(`@layer ${name}{`, from); if (start < 0) break;
+    let depth = 1, j = start + `@layer ${name}{`.length;
+    while (j < preview.length && depth) { if (preview[j] === '{') depth++; else if (preview[j] === '}') depth--; j++; }
+    out.push(preview.slice(start, j)); from = j;
+  }
+  return out.join('\n');
 };
 
 const html = `<!doctype html><html lang=en data-t=base><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
@@ -163,7 +167,7 @@ body{hanging-punctuation:first allow-end;font-optical-sizing:auto}
 const r=document.documentElement;
 const S=()=>{try{return JSON.parse(localStorage.mui||'{}')}catch{return{}}};
 const apply=s=>{const d=s.den||'base',l=s.lum||'light';
-  r.dataset.t=(d==='sharp'?'sharp':'base')+(l==='dark'?'-dark':'');
+  r.dataset.t=d==='sharp'?(l==='dark'?'sharp-dark':'sharp'):(l==='dark'?'dark':'base');
   for(const b of document.querySelectorAll('[data-den]'))b.setAttribute('aria-pressed',b.dataset.den===d);
   for(const b of document.querySelectorAll('[data-lum]'))b.setAttribute('aria-pressed',b.dataset.lum===l)};
 let s=S();apply(s);
