@@ -50,11 +50,11 @@ STE user-story spec (`pairs-pro/docs/refresh-user-stories.md`) cites them. A rev
 | W-21 | states | Gateway down · RPC-only | Deposit |
 | W-22 | states | Transaction states | — |
 
-## Measurements (round 2, 2026-10-19)
+## Measurements (round 3, 2026-10-19)
 
 | Check | Result |
 | --- | --- |
-| `pairs-pro.html` | raw 150,501 B · brotli 23,119 B (blocks.html: 137,781 / 25,445 — raw is over because every price chart now carries its band rows for the readout; compressed stays under) |
+| `pairs-pro.html` | raw 151,601 B · brotli 23,484 B (blocks.html: 137,781 / 25,445 — raw is over because every price chart carries its band rows for the readout; compressed stays under) |
 | Shared helpers | `lib/ui.js` extracted from blocks.js; `blocks.html` byte-identical before the nav link, one hunk after |
 | Primary actions | ≤ 1 `[data-p]` per frame, asserted at build |
 | Contrast gate | 88 pairs ≥ 4.5:1 across both theme sources, worst 5.10 |
@@ -106,3 +106,29 @@ Frame changes applied:
   per-row band payload; depth flags are base · limit · none with share of total; the depth axis reads prices.
 - Group texts: guest includes a wallet with no role and no shares; manager explains the admin-with-role-0 case.
 - Phone frames: table cells may wrap, readouts are three fixed lines, so nothing overflows a frame.
+
+## Round 3 → 4 (2026-10-19, human review of the sheet)
+
+Feedback: Pairs.pro on a white background; chart type as a menu with the period right-aligned; the Advance view
+simplified into logical groups (anchor, range, weight, exposure) with a settings UI like a mobile app;
+allocation ranges summarised as base (low–high) and limit (low–high), prices by default, a click toggles ticks;
+config in its own tab; one weight slider for the base · limit ratio; sliders for base and limit ATR (1–15),
+chase, target ratio and tolerance; slippage control as a toggle; the less useful settings hidden.
+
+Applied:
+- Frames render on `--n0` (white in the light themes); the intro says so.
+- Price card: the type is a menu ("1H candles · 1D candles · Line") with the show-range switch beside it; the
+  period segment (7D · 30D · All) sits at the right of the same row.
+- Advance is a panel with three tabs: Allocation, Shares & rewards, Settings (Config for a manager or admin).
+  Allocation shows the base and limit ranges as prices with their bars and the current price; a click on any
+  range swaps every range in the card to ticks and back (`.unit`, `data-price` / `data-tick`). The rebalance
+  line, config hash and the positions table follow. W-24 shows the Shares & rewards tab.
+- Config editor (W-15) in four groups — Anchor (anchor pool menu, interval menu, day and hour EMA), Range
+  (base ATR and limit ATR sliders 1–15, chase slider, offset segment), Weight (one slider, 80 % · 20 %),
+  Exposure (target base ratio and tolerance sliders, reduce logic segment, slippage control and enabled
+  toggles) — with an "Advanced · 6 settings" disclosure for offsetMultiplier, offsetInitialStrength, the offset
+  EMAs, refresh interval and plotDetails, plus the read-only rows. Preview and Save stay at the end.
+- W-16 and the guest Settings tab show the same four groups as read-only rows. W-14 uses the same range rows.
+- Spec revision 3: G-20, G-21 (menu), G-50, G-51 (tabs, price ⇄ tick toggle), §7, §8.1, new §9.0 editor layout.
+- Print: the wide pool view keeps two columns (the screen collapse rule is scoped to `screen`); tab labels stay
+  on one line in phone frames.
