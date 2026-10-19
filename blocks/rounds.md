@@ -158,3 +158,35 @@ agent's own pick is marked with a one-line reason. A reviewer marks the variant 
 change, and **Copy review** puts the whole set on the clipboard as JSON. Paste it back into the session; the
 next round replaces the losing variants with new ones built from the notes, and the page is republished.
 Choices persist in the browser, so a review can be finished across several visits.
+
+---
+
+## Review round 1 → round 2 (2026-10-19)
+
+**Human review, round 1** (three blocks reviewed; seven untouched):
+
+- *Markets table* — combine B and C; the column is **Network**, not Chain; lending rows need borrow rate, lend
+  rate and loan / collateral / LLTV; AMM rows need fee and tick spacing; network as an SVG glyph to save width.
+- *Position card* — the borrow rate must be on the card; the health bar and the liquidity bar need one
+  information architecture (try bar-on-top and bar-at-bottom); "Fees earned" and "Accrued" need one semantics;
+  the fixed-lend card follows the same design; the compact rows must align; the two header labels
+  (Fixed · 30 Oct / Due in 13 d) stack vertically to free header width.
+- *Chart card* — values on hover, not as a permanent readout; one period set, right-aligned; add a variant
+  with the CL allocation band under a show-range toggle and a type switch (1H · 1D · line); the rate chart
+  shows mid, lend and borrow.
+- *Theme* — base/quote chips read better in dark than light.
+- *Tooling* — Copy review produced nothing.
+
+**Changes in round 2:**
+
+- Markets: one row skeleton for both kinds — identity (pair + loan/collateral/LLTV or fee/ts) · network glyph ·
+  two two-line amounts · two rates with their kind · sparkline. Variants A (lending) and B (AMM) carry the
+  toolbar; dense, grouped and mobile forms keep the glyph.
+- Position: one skeleton — header with stacked labels · bar with three labels (edge · you · edge) · three rows
+  (size · rate · earned) · actions. A/B differ only in bar position; C (CL) and D (fixed lend) are the same
+  skeleton with range and term bars; E is a grid so rows align.
+- Chart: readout only on hover with a crosshair; `1D · 7D · 30D · All` right-aligned on every card; C is
+  lend · mid · borrow; E is price with the position's range as a band, a show-range switch and 1H · 1D · line.
+- Light chips brought up to the dark pair's chroma (`--tb #a9c8ff`, `--tq #a3e6c0`); gate still 5.10 worst.
+- Copy review now opens a panel with the text selected and attempts the clipboard; nothing is lost if the
+  clipboard is blocked.
