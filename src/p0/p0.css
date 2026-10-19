@@ -42,12 +42,12 @@ code,.mono,[data-mono]{font-family:var(--fm);font-variant-numeric:tabular-nums}
 .card{background:var(--n0);border:1px solid var(--n3);border-radius:var(--r4);padding:calc(1rem*var(--sp));box-shadow:var(--sh)}
 .eyebrow{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.18em;color:var(--fg3)}
 .panel{border:1px solid var(--b,var(--n3));background:var(--s,var(--n1));border-radius:var(--r3);padding:calc(.75rem*var(--sp))}
-.pill{display:inline-flex;align-self:start;align-items:center;gap:.375rem;border-radius:var(--rf);background:var(--s,var(--n2));color:var(--f,var(--fg2));padding:.25rem .75rem;font-size:.75rem;font-weight:600}
+.pill{display:inline-flex;align-self:start;align-items:center;gap:.375rem;border-radius:var(--rf);border:1px solid transparent;background:var(--s,var(--n2));color:var(--f,var(--fg2));padding:.25rem .75rem;font-size:.75rem;font-weight:600}
 [data-v=ac]{--s:var(--ac-s);--b:var(--ac-b);--f:var(--ac-f)}
 [data-v=ok]{--s:var(--ok-s);--b:var(--ok-b);--f:var(--ok-f)}
 [data-v=wa]{--s:var(--wa-s);--b:var(--wa-b);--f:var(--wa-f)}
 [data-v=no]{--s:var(--no-s);--b:var(--no-b);--f:var(--no-f)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border-radius:var(--r2);padding:.625rem 1rem;font-weight:600;font-size:.875rem;background:var(--n2);color:var(--fg);transition:background .12s}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border-radius:var(--r2);border:1px solid transparent;padding:.625rem 1rem;font-weight:600;font-size:.875rem;background:var(--n2);color:var(--fg);transition:background .12s}
 .btn:hover{background:var(--n3)}
 .btn[data-p]{background:var(--ac);color:var(--on-ac)}
 .btn[data-p]:hover{filter:brightness(.92)}
@@ -80,8 +80,8 @@ code,.mono,[data-mono]{font-family:var(--fm);font-variant-numeric:tabular-nums}
    few colours, hairlines instead of fills, data-first numerals. Only [data-p] is ever a filled control. */
 :root:where([data-t=sharp],[data-t=sharp-dark]) .card{background:transparent;border:1px solid var(--n4);box-shadow:none}
 :root:where([data-t=sharp],[data-t=sharp-dark]) .panel{background:transparent;border-color:var(--b,var(--n4))}
-:root:where([data-t=sharp],[data-t=sharp-dark]) .pill{background:transparent;border:1px solid var(--b,var(--n4));color:var(--f,var(--fg2))}
-:root:where([data-t=sharp],[data-t=sharp-dark]) .btn{background:transparent;border:1px solid var(--n4)}
+:root:where([data-t=sharp],[data-t=sharp-dark]) .pill{background:transparent;border-color:var(--b,var(--n4));color:var(--f,var(--fg2))}
+:root:where([data-t=sharp],[data-t=sharp-dark]) .btn{background:transparent;border-color:var(--n4)}
 :root:where([data-t=sharp],[data-t=sharp-dark]) .btn:hover{background:var(--n2)}
 :root:where([data-t=sharp],[data-t=sharp-dark]) .btn[data-p]{background:var(--ac);border-color:var(--ac);color:var(--on-ac)}
 :root:where([data-t=sharp],[data-t=sharp-dark]) .btn[data-v]{background:transparent;color:var(--f);border-color:var(--b)}

@@ -190,3 +190,75 @@ Choices persist in the browser, so a review can be finished across several visit
 - Light chips brought up to the dark pair's chroma (`--tb #a9c8ff`, `--tq #a3e6c0`); gate still 5.10 worst.
 - Copy review now opens a panel with the text selected and attempts the clipboard; nothing is lost if the
   clipboard is blocked.
+
+---
+
+## Agent review rounds against the goals (2026-10-19)
+
+Four rounds, each a different lens, each applied before the next reviewer reads the page.
+
+### Round 1 — design-language conformance (Rule 4, one primary, rates carry kind, numbers, Base/Sharp, naming)
+
+Ten findings, all applied:
+1. **Sign bug.** `metric()` tested for ASCII `-`; the data used the typographic minus, so `−4.8% 24h` rendered as an *up* delta. Now `/^[-−]/`.
+2. Rates without a kind in the cell (dense table lend/borrow, maturity list, order book) — the kind is now in every cell; order-book captions read "lend rate · size · cumulative".
+3. "APR" / "Rate" where lending needs "Borrow rate" / "Lend rate" (ticket, dense headers).
+4. Inline looks that would fight Sharp (sticky header, wallet pills, maturity rows, legend swatches) → recipes: `.panel`, `.pill.acct`, `.pickrow`, `.legend i{--k}`.
+5. The CL band was a `<rect>` Sharp's stroke-only rule could not strip → a `<path>`.
+6. `--ac` used as data ink (tick histogram "other" bars, rate-band stroke/fill) → `--c1` and `--n2`.
+7. Sparklines were `aria-hidden` and colour-only → `role=img aria-label="7d up|down"` with a `<title>`.
+8. "Chain" survived in header copy and variants → network glyph with its name (`.net-lbl`).
+9. Position A/B folded accrued interest into the rate row → three rows (debt · borrow rate · earned), earned signed.
+10. Figures without `.num`; `thead` only right-aligned four header words; vocabulary drift (Vol/Volume, Fee/Network fee, Pools/Markets, LP/Liquidity) → one spelling each.
+
+Confirmed conforming and protected: one `[data-p]` per ticket variant, none on Connect; `--tb/--tq` only inside `.tk i`; zero colour literals in the page CSS; glyphs labelled; system stack only.
+
+### Round 2 — information architecture and portfolio fit
+
+Ten findings; nine applied, one declined:
+1. A borrower cannot "earn" −$89 → the third row is **Accrued** on every card (signed: + owed to you, − owed by you), and the compact row's money column is that same figure.
+2. The order book's "lend rate" meant the opposite of the table's "Lend rate" → halves named by the taker: "Offers to lend — **borrow at**" / "Offers to borrow — **lend at**".
+3. The health bar's labels were you · you · edge and its fill ignored the liquidation edge → `0% · LTV 61% · health 1.41 · liquidation 86%`, fill 61/86, the middle label at body colour (`.you`). **Declined:** making the first action `[data-p]` — one primary per *view* means a list of cards cannot each carry one.
+4. Lend rate now carries the term like the borrow rate; "Lent" is the one word for the side; `kind()` lowercases the kind, not the date.
+5. One pair order everywhere: collateral / loan; the header's identity line carries collateral · loan · LLTV instead of a bare pill.
+6. AMM row rebuilt on the skeleton: fees under volume, fee APR · 7d, vol / TVL · 24h as the second rate.
+7. Maturity list names its side (borrow) and its columns; "Matures 30 Oct 2026" with an uncoloured countdown.
+8. Two-line cells right-aligned (`td.num`) so columns compare downward.
+9. Phone forms declared: compact rows collapse to two lines under 48 rem; 2×2 grids below 60 rem.
+10. Time words follow the pressed control (30D ↔ "30 days"; "1H candles · 1D candles · line"; deltas say 24h; timeline rows carry a countdown).
+
+Protected: the ticket's native LTV range with 0% · liquidation 86%; "You receive" vs "Min. received"; the markets identity line; range and term bars; hover-only readouts.
+
+### Round 3 — accessibility and interaction
+
+Ten findings, all applied:
+1. Chart readouts were pointer-only → chart boxes are focusable groups; ← → Home End move the crosshair; the readout is `aria-live`; blur resets like pointer-leave.
+2. `touch-action:none` on five full-width chart boxes would swallow vertical swipes → `pan-y`.
+3. Meters announced the fill percentage, unnamed → `role=meter` with a name and `aria-valuetext` carrying the drawn value ("61%, liquidation at 86%, health 1.41"; "13 days left, matures 30 Oct").
+4. Unlabelled inputs (search, amount, the two price sliders, the review textarea) → `aria-label` / `aria-labelledby`.
+5. Eight anonymous `role=group` segmented controls → named (Period · Chart type · Fee tier).
+6. `.field:focus-visible{outline:none}` left a focused field in Sharp looking like any other hairline box → the base focus ring shows through (shared recipe, so the design page benefits too).
+7. Variants had no accessible name and sample `<h2>`s polluted the outline → `aria-label="A · name"` on every article, sample headings at `aria-level=4`.
+8. Pressed states never changed on `.pickrow`, preset chips and network buttons; tabs had no arrow keys → delegate widened; ← → move between tabs and segments.
+9. Closing the review panel dropped focus to `<body>`; Escape did nothing; TOC "decided" was colour-only → focus returns to Copy, Escape closes, the link's label says "— decided".
+10. Horizontal table scrollers were not keyboard-scrollable; three unnamed `<nav>`s → `tabindex=0`; Site · Blocks · Breadcrumb.
+
+Protected: reduced-motion kill switch; unique ids; `rangeBar` decorative with values in text; every switch and radio inside a label; hit areas ≥ 31 px; the 16 px network glyph is never a control.
+
+### Round 4 — budget, CLS discipline and copy
+
+Twelve findings, all applied:
+1. The chart readout could wrap when an OHLC line outgrew its placeholder — a hover-induced layout shift, and pointer moves get no CLS grace window → `.readout` is one line (`min-height:1lh`, `nowrap`, ellipsis) and takes the free width of its row. Measured: hovering every chart, toggling every segment and the show-range switch move nothing; the only rect change on the page is the theme switch itself.
+2. Sharp drew a hairline on buttons, pills and segments that Base did not reserve → Base controls carry a transparent 1 px border; Sharp only sets `border-color`. Both theme sources (`preview.html`, `p0.css`). The remaining height difference between Base and Sharp is Sharp's denser type (14 px / 1.45 against 17 px / 1.6), which is the point of the theme.
+3. Keyboard crosshair was invisible because the copied chart CSS only shows it on `:hover` → `.chartbox .xh{opacity:1}`; the keyboard path now reads like the pointer path.
+4. `.btn[aria-pressed=true]` had no rule, so the round-3 pressed-state delegate changed nothing visible → tinted with `--ac-s` and an inset `--ac-b` ring.
+5. Gallery rules lifted into the page with no matching class (70 rules, 5.3 KB raw) → `comp` and `chart` layers are pruned against the rendered body at build; `@media` blocks and class-less rules are kept.
+6. Three rule sets duplicated from the gallery (`.seg…`, `.spark path`, `input[type=range]`) → removed from `@layer blocks`.
+7. Two independent 48-candle histories for chart A and chart E → one `OHLC`, and `data-hover` numbers are rounded at build (JSON 8.0 KB → 5.9 KB).
+8. Forty-odd inline layout styles → classes (`narrow`, `tight`, `loose`, `start`, `baseline`, `num.lg`, `spark.wide`, chart `aspect-ratio` on `.chartbox`); only data-driven values (meter widths, band positions, `--k`, `--w`) stay inline.
+9. Dollar formats disagreed between rows, cards and the readout → one `usd()` (B 2 dp, M and k 1 dp) and `tok()` for token amounts on the same thresholds; the readout uses locale grouping.
+10. OHLC readout was a raw tuple (`O 2431.5  H …`) → `O 2,431.50 · H … · V 898.4 WETH`, lines joined with `·` like the rest of the page.
+11. Time-left came in three forms and two sums were wrong → `6 d 4 h`, `13 d`, `in 13 d`; `0.0088 WETH + 9.81 USDC`; ticket C `max 39,475 USDC`, `$65,116`.
+12. Notes opened with "Round 2:" / "Round 1 asked", three claims the markup did not deliver, and names mixed `:` / `+` / `→` → notes describe the variant; "Earned" became accrued; the phone card list really spans its sparkline (`preserveAspectRatio=none`); breadcrumbs use `/`; every name is `Name — qualifier`; `three costumes` → `three forms`; the changelog paragraph in the intro is gone.
+
+Result: `blocks.html` 146.9 → 137.7 KB raw, 28.8 → 25.5 KB brotli; contrast gate 88 pairs ≥ 4.5:1 across both sources, worst 5.10.

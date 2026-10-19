@@ -37,13 +37,13 @@ p,li{max-width:64ch}code,.mono,[data-mono]{font-family:var(--fm);font-variant-nu
 .eyebrow{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.18em;color:var(--fg3)}
 .muted{color:var(--fg3)}.sub{color:var(--fg2)}.sm{font-size:.8125rem}.xs{font-size:.75rem}
 .panel{border:1px solid var(--b,var(--n3));background:var(--s,var(--n1));border-radius:var(--r3);padding:calc(.75rem*var(--sp))}
-.pill{display:inline-flex;align-self:start;align-items:center;gap:.375rem;border-radius:var(--rf);background:var(--s,var(--n2));color:var(--f,var(--fg2));padding:.25rem .75rem;font-size:.75rem;font-weight:600;white-space:nowrap}
+.pill{display:inline-flex;align-self:start;align-items:center;gap:.375rem;border-radius:var(--rf);border:1px solid transparent;background:var(--s,var(--n2));color:var(--f,var(--fg2));padding:.25rem .75rem;font-size:.75rem;font-weight:600;white-space:nowrap}
 [data-v=ac]{--s:var(--ac-s);--b:var(--ac-b);--f:var(--ac-f)}[data-v=ok]{--s:var(--ok-s);--b:var(--ok-b);--f:var(--ok-f)}[data-v=wa]{--s:var(--wa-s);--b:var(--wa-b);--f:var(--wa-f)}[data-v=no]{--s:var(--no-s);--b:var(--no-b);--f:var(--no-f)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border-radius:var(--r2);padding:.625rem 1rem;font-weight:600;font-size:.875rem;background:var(--n2);color:var(--fg);transition:background .12s;white-space:nowrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border-radius:var(--r2);border:1px solid transparent;padding:.625rem 1rem;font-weight:600;font-size:.875rem;background:var(--n2);color:var(--fg);transition:background .12s;white-space:nowrap}
 .btn:hover{background:var(--n3)}.btn[data-p]{background:var(--ac);color:var(--on-ac)}.btn[data-p]:hover{filter:brightness(.92)}.btn:disabled{opacity:.5;cursor:not-allowed}
 .btn[data-v]{background:var(--s);color:var(--f);border:1px solid var(--b)}.btn.ghost{background:none;border:1px solid var(--n3)}.btn.sm{padding:.375rem .625rem;font-size:.75rem}.btn.lg{padding:.875rem 1.25rem;font-size:1rem;width:100%}
 .field{display:block;width:100%;border:1px solid var(--n3);background:var(--n0);border-radius:var(--r2);padding:.625rem .75rem;font-variant-numeric:tabular-nums}
-.field:focus-visible{border-color:var(--ac);outline:none;box-shadow:0 0 0 4px var(--ac-r)}.field[aria-invalid=true]{border-color:var(--no-b);box-shadow:0 0 0 4px var(--no-s)}
+.field:focus-visible{border-color:var(--ac);box-shadow:0 0 0 4px var(--ac-r)}.field[aria-invalid=true]{border-color:var(--no-b);box-shadow:0 0 0 4px var(--no-s)}
 .field.big{font-size:calc(var(--fs)*1.75);font-weight:600;padding:.5rem .75rem;letter-spacing:-.02em}
 textarea.field{min-height:5rem;field-sizing:content;resize:vertical}
 select.field{appearance:none;padding-right:2.25rem;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%237d8794' stroke-width='2'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .625rem center}
@@ -53,7 +53,7 @@ input[type=range]{accent-color:var(--ac);width:100%}
 .switch{appearance:none;width:2.5rem;height:1.5rem;border-radius:var(--rf);background:var(--n4);position:relative;transition:background .15s;flex:0 0 auto}.switch:before{content:"";position:absolute;top:.1875rem;left:.1875rem;width:1.125rem;height:1.125rem;border-radius:var(--rf);background:#fff;box-shadow:0 1px 2px #0003;transition:transform .15s}.check .switch,.switch{width:2.5rem;height:1.5rem}.switch:checked{background:var(--ac)}.switch:checked:before{transform:translateX(1rem)}
 .ring{box-shadow:0 0 0 4px var(--ac-r)}
 .tabs{display:flex;gap:.25rem;border-bottom:1px solid var(--n3)}.tabs button{padding:.5rem .75rem;font-weight:600;color:var(--fg3);border-bottom:2px solid transparent;margin-bottom:-1px}.tabs button[aria-selected=true]{color:var(--fg);border-color:var(--ac)}
-.seg{display:inline-flex;background:var(--n2);border-radius:var(--r2);padding:.1875rem;gap:.125rem}.seg button{padding:.375rem .75rem;border-radius:calc(var(--r2) - .1875rem);font-size:.8125rem;font-weight:600;color:var(--fg2)}.seg button[aria-pressed=true]{background:var(--n0);color:var(--fg);box-shadow:var(--sh)}
+.seg{display:inline-flex;background:var(--n2);border-radius:var(--r2);border:1px solid transparent;padding:.1875rem;gap:.125rem}.seg button{padding:.375rem .75rem;border-radius:calc(var(--r2) - .1875rem);font-size:.8125rem;font-weight:600;color:var(--fg2)}.seg button[aria-pressed=true]{background:var(--n0);color:var(--fg);box-shadow:var(--sh)}
 .crumbs{display:flex;gap:.5rem;font-size:.8125rem;color:var(--fg3)}.crumbs a{text-decoration:none}.crumbs a:hover{color:var(--fg)}.crumbs [aria-current]{color:var(--fg);font-weight:600}
 .list{display:flex;flex-direction:column}.list>*{display:flex;align-items:center;gap:.75rem;padding:var(--cell) 0;border-bottom:1px solid var(--n3);text-decoration:none}.list>:last-child{border:0}.list .grow{min-width:0}.list h4,.list .t{font-weight:600}
 .tk{display:inline-flex;flex:0 0 auto}.tk i{width:1.5rem;height:1.5rem;border-radius:var(--rf);border:2px solid var(--n0);display:grid;place-items:center;font:700 .5625rem/1 var(--ff);font-style:normal;background:var(--k,var(--tb));color:var(--on-tb);box-shadow:inset 0 0 0 1px var(--tb-b)}
@@ -103,8 +103,8 @@ section{scroll-margin-top:5rem;display:flex;flex-direction:column;gap:calc(1rem*
    few colours, hairlines instead of fills, data-first numerals. Only [data-p] is ever a filled control. */
 :root:where([data-t=sharp],[data-t=sharp-dark]) .card{background:transparent;border:1px solid var(--n4);box-shadow:none}
 :root:where([data-t=sharp],[data-t=sharp-dark]) .panel{background:transparent;border-color:var(--b,var(--n4))}
-:root:where([data-t=sharp],[data-t=sharp-dark]) .pill{background:transparent;border:1px solid var(--b,var(--n4));color:var(--f,var(--fg2))}
-:root:where([data-t=sharp],[data-t=sharp-dark]) .btn{background:transparent;border:1px solid var(--n4)}
+:root:where([data-t=sharp],[data-t=sharp-dark]) .pill{background:transparent;border-color:var(--b,var(--n4));color:var(--f,var(--fg2))}
+:root:where([data-t=sharp],[data-t=sharp-dark]) .btn{background:transparent;border-color:var(--n4)}
 :root:where([data-t=sharp],[data-t=sharp-dark]) .btn:hover{background:var(--n2)}
 :root:where([data-t=sharp],[data-t=sharp-dark]) .btn[data-p]{background:var(--ac);border-color:var(--ac);color:var(--on-ac)}
 :root:where([data-t=sharp],[data-t=sharp-dark]) .btn[data-v]{background:transparent;color:var(--f);border-color:var(--b)}
@@ -112,7 +112,7 @@ section{scroll-margin-top:5rem;display:flex;flex-direction:column;gap:calc(1rem*
 :root:where([data-t=sharp],[data-t=sharp-dark]) .eyebrow{font-size:.6875rem;letter-spacing:.1em}
 :root:where([data-t=sharp],[data-t=sharp-dark]) .num,:root:where([data-t=sharp],[data-t=sharp-dark]) .kv dd{font-family:var(--fm);font-variant-numeric:tabular-nums slashed-zero lining-nums;font-size:.9375em}
 :root:where([data-t=sharp],[data-t=sharp-dark]) .meter{background:transparent;border:1px solid var(--n4)}
-:root:where([data-t=sharp],[data-t=sharp-dark]) .seg{background:transparent;border:1px solid var(--n4)}
+:root:where([data-t=sharp],[data-t=sharp-dark]) .seg{background:transparent;border-color:var(--n4)}
 :root:where([data-t=sharp],[data-t=sharp-dark]) .seg button[aria-pressed=true]{background:var(--n2);box-shadow:none}
 :root:where([data-t=sharp],[data-t=sharp-dark]) .tk i{background:transparent;border:1.5px solid var(--tb-b);color:var(--on-tb);box-shadow:none}
 :root:where([data-t=sharp],[data-t=sharp-dark]) .tk i:nth-child(2){border-color:var(--tq-b);color:var(--on-tq)}
