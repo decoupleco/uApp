@@ -3,30 +3,11 @@
 // reason, the reviewer marks theirs and writes what to change, and "Copy review" hands the round back as JSON.
 // Tokens and recipes are lifted from preview.html so the blocks are built from the same vocabulary as the gallery.
 // A review round is an edit to the BLOCKS data below, then `bun ./blocks.js`.
-const preview = await Bun.file('preview.html').text();
+import { rnd, walk, fmt, short, usd, tok, spark, area, line, tk, netLbl, seg, thead, metric, kv, meter, rangeBar, netIcon, two, stackLbl, candleData, candleSvg, lineSvg, head, readout, hoverBox, prune, layer, esc, COMPOSITES } from './lib/ui.js';
 
 // ---------- deterministic data (seeded, so a rebuild never changes a chart by accident) ----------
-let seed = 7;
-const rnd = () => (seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
-const walk = (n, p = 100, vol = .03) => { const a = []; for (let i = 0; i < n; i++) { p *= 1 + (rnd() - .5) * vol; a.push(p); } return a; };
-const fmt = (n, d = 2) => n.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
-const short = (n, d) => n.toLocaleString('en-US', { maximumFractionDigits: d });
-const usd = n => n >= 1e9 ? `$${short(n / 1e9, 2)}B` : n >= 1e6 ? `$${short(n / 1e6, 1)}M` : n >= 1e3 ? `$${short(n / 1e3, 1)}k` : `$${fmt(n)}`;
-const tok = (n, sym) => (n >= 1e9 ? `${short(n / 1e9, 2)}B` : n >= 1e6 ? `${short(n / 1e6, 1)}M` : n >= 1e3 ? `${short(n / 1e3, 1)}k` : fmt(n)) + ' ' + sym;
 
 // ---------- SVG primitives (the same arithmetic as reference/charts, rendered at build time) ----------
-const spark = (pts, w = 96, h = 28, cls = 'spark', label = 'trend') => {
-  const wide = /wide/.test(cls);
-  const lo = Math.min(...pts), hi = Math.max(...pts), n = pts.length, up = pts[n - 1] >= pts[0];
-  const d = pts.map((v, i) => `${i ? 'L' : 'M'}${(i / (n - 1) * w).toFixed(0)} ${(h - 2 - (v - lo) / (hi - lo || 1) * (h - 4)).toFixed(0)}`).join('');
-  return `<svg class="${cls}" viewBox="0 0 ${w} ${h}"${wide ? ' preserveAspectRatio=none' : ''} role=img aria-label="${label} ${up ? 'up' : 'down'}"><title>${label} ${up ? 'up' : 'down'}</title><path d="${d}" stroke="var(--${up ? 'ok' : 'no'}-f)"/></svg>`;
-};
-const area = (pts, w = 1000, h = 240, id = 'g') => {
-  const lo = Math.min(...pts) * .98, hi = Math.max(...pts) * 1.02, n = pts.length;
-  const P = pts.map((v, i) => `${(i / (n - 1) * w).toFixed(0)} ${(h - 4 - (v - lo) / (hi - lo) * (h - 8)).toFixed(0)}`);
-  return `<svg class=chart viewBox="0 0 ${w} ${h}" preserveAspectRatio=none aria-hidden=true><defs><linearGradient id="${id}" x1=0 y1=0 x2=0 y2=1><stop offset=0 stop-color="var(--c1)" stop-opacity=.35/><stop offset=1 stop-color="var(--c1)" stop-opacity=0/></linearGradient></defs><path d="M${P[0]}L${P.join('L')}V${h}H0z" fill="url(#${id})"/><path d="M${P.join('L')}" fill=none stroke="var(--c1)" stroke-width=2/><line class=xh y1=0 y2=${h} stroke="var(--fg3)" stroke-dasharray="4 4" visibility=hidden/></svg>`;
-};
-const line = (pts, w, h, color, lo, hi) => { const n = pts.length; return `<path d="M${pts.map((v, i) => `${(i / (n - 1) * w).toFixed(0)} ${(h - 4 - (v - lo) / (hi - lo) * (h - 8)).toFixed(0)}`).join('L')}" fill=none stroke="${color}" stroke-width=2/>`; };
 const candles = (n = 48, height = 240, volume = 56) => {
   const w = 1000, hP = height - volume - 8, bw = w / n; let p = 2431.5; const rows = [];
   for (let i = 0; i < n; i++) { const o = p, h = o * (1 + rnd() * .006), l = o * (1 - rnd() * .006), c = l + rnd() * (h - l); p = c; rows.push([o, h, l, c, rnd() * 900 + 50]); }
@@ -42,51 +23,17 @@ const depthCurve = (h = 180) => { let d1 = 'M0 ' + h, d2 = `M500 ${h}`, q = 0; f
 const ticks = (n = 40, h = 160, range = [14, 26], cur = 20) => { const bw = 1000 / n; let s = ''; for (let i = 0; i < n; i++) { const v = (Math.sin(i / 5) + 1.2) * 40 + rnd() * 30, fill = i === cur ? 'var(--no-f)' : i >= range[0] && i < range[1] ? 'var(--ok-f)' : 'var(--c1)'; s += `<rect x=${(i * bw + 1).toFixed(0)} y=${(h - v).toFixed(0)} width=${(bw - 2).toFixed(0)} height=${v.toFixed(0)} fill="${fill}"/>`; } return `<svg class=chart viewBox="0 0 1000 ${h}" preserveAspectRatio=none aria-hidden=true>${s}</svg>`; };
 
 // ---------- shared fragments ----------
-const tk = (a, b, lg) => `<span class="tk${lg ? ' lg' : ''}"><i>${a[0]}</i><i>${b[0]}</i></span>`;
 const chainPill = c => `<span class="pill sm">${c}</span>`;
-const netLbl = c => `<span class="net-lbl">${netIcon(c)}${c}</span>`;
-const seg = (opts, on = 0, attr = 'data-period', label = 'Period') => `<div class=seg role=group aria-label="${label}">${opts.map((o, i) => `<button ${attr}="${o}" aria-pressed=${i === on}>${o}</button>`).join('')}</div>`;
 const MARKETS = [['WETH', 'USDC', 'Base', '0.05%', 184.2e6, 62.1e6, 31.0e3, 12.4], ['mUSD', 'BTC', 'Mezo', '0.30%', 48.7e6, 9.3e6, 27.9e3, 21.1], ['cbBTC', 'USDC', 'Base', 'LLTV 86%', 97.4e6, 4.2e6, 0, 4.61], ['USDC', 'WETH', 'Ethereum', 'LLTV 91.5%', 525.1e6, 18.8e6, 0, 3.99], ['wstETH', 'ETH', 'Ethereum', '0.01%', 310.5e6, 41.0e6, 4.1e3, 2.3]];
 const rowDense = ([a, b, chain, kind, tvl, vol, fee, apr]) => `<tr><td>${tk(a, b)}<b>${a}/${b}</b> <span class=muted>${kind}</span></td><td>${chainPill(chain)}</td><td class=num>${usd(tvl)}</td><td class=num>${usd(vol)}</td><td class=num>${fee ? usd(fee) : '—'}</td><td class=num><b>${fmt(apr)}%</b> <span class="xs muted">${fee ? 'APR' : 'borrow'}</span></td><td>${spark(walk(24))}</td></tr>`;
-const thead = cols => `<thead><tr>${cols.map(c => `<th${/TVL|Vol|Fees|APR|Rate|Supply|Borrow|Lend|Amount|Size|Cumul/.test(c) ? ' class=num' : ''}>${c}</th>`).join('')}</tr></thead>`;
-const metric = (k, v, d) => `<div class="panel stack tighter"><span class=eyebrow>${k}</span><b class="num lg">${v}</b>${d ? `<span class="delta sm" data-d="${/^[-−]/.test(d) ? 'down' : 'up'}">${d}</span>` : ''}</div>`;
-const kv = pairs => `<dl class=kv>${pairs.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>`;
-const meter = (pct, v, label = 'Progress', text = `${pct}%`) => `<div class=meter data-v=${v} role=meter aria-label="${label}" aria-valuenow=${pct} aria-valuemin=0 aria-valuemax=100 aria-valuetext="${text}"><i style="width:${pct}%"></i></div>`;
-const rangeBar = (lo, hi, cur) => `<div class=rangebar aria-hidden=true><i class=band style="left:${lo}%;width:${hi - lo}%"></i><i class=cur style="left:${cur}%"></i></div>`;
 
 // ---------- the ten blocks ----------
 // ===== helpers added for round 2 =====
 // Network as a 16px glyph, not a text pill: one path each, currentColor, labelled for screen readers.
-const NET = {
-  Base: 'M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zm0 3a4 4 0 1 1 0 8 4 4 0 0 1 0-8z',
-  Ethereum: 'M8 1 3.2 8.3 8 11.2l4.8-2.9zM3.2 9.4 8 15l4.8-5.6L8 12.2z',
-  Mezo: 'M8 1.5 13.6 4.7v6.6L8 14.5 2.4 11.3V4.7zM8 4.3 4.9 6.1v3.8L8 11.7l3.1-1.8V6.1z',
-  Arbitrum: 'M8 1.5 14 5v6L8 14.5 2 11V5zm0 3.2L5.1 10h5.8z',
-  Sonic: 'M8 1.5a6.5 6.5 0 1 1 0 13 6.5 6.5 0 0 1 0-13zm-3 5h6v1.5H5zm0 3h6V11H5z',
-};
-const netIcon = n => `<svg class=net viewBox="0 0 16 16" role=img aria-label="${n}"><title>${n}</title><path d="${NET[n] || NET.Base}"/></svg>`;
 const kind = term => term.replace(/^(\w+)/, m => m.toLowerCase());        // 'Fixed · 30 Oct' → 'fixed · 30 Oct'
-const two = (a, b) => `<div class=num>${a}<div class="xs muted">${b}</div></div>`;        // token amount over its USD
-const stackLbl = (a, b) => `<div class="stk"><span class="pill sm">${a}</span><span class="xs muted">${b}</span></div>`;  // two short labels, stacked
 
 // chart data is kept so hover readouts can be driven from it
-const candleData = n => { let p = 2431.5; const rows = []; for (let i = 0; i < n; i++) { const o = p, h = o * (1 + rnd() * .006), l = o * (1 - rnd() * .006), c = l + rnd() * (h - l); p = c; rows.push([+o.toFixed(2), +h.toFixed(2), +l.toFixed(2), +c.toFixed(2), +(rnd() * 900 + 50).toFixed(1)]); } return rows; };
-const candleSvg = (rows, height = 240, volume = 56, band = null) => {
-  const w = 1000, hP = height - volume - 8, n = rows.length, bw = w / n;
-  let lo = 1e9, hi = -1e9, vm = 0; for (const r of rows) { lo = Math.min(lo, r[2]); hi = Math.max(hi, r[1]); vm = Math.max(vm, r[4]); }
-  const y = v => hP - (v - lo) / (hi - lo) * hP; let up = '', dn = '', uw = '', dw = '', vol = '';
-  rows.forEach((r, i) => { const x = i * bw + bw / 2, ris = r[3] >= r[0], wick = `M${x.toFixed(0)} ${y(r[1]).toFixed(0)}V${y(r[2]).toFixed(0)}`; ris ? uw += wick : dw += wick;
-    const t = y(Math.max(r[0], r[3])), b = y(Math.min(r[0], r[3])), body = `M${(x - bw * .35).toFixed(0)} ${t.toFixed(0)}h${(bw * .7).toFixed(0)}v${Math.max(b - t, 1).toFixed(0)}h-${(bw * .7).toFixed(0)}z`; ris ? up += body : dn += body;
-    vol += `M${(x - bw * .35).toFixed(0)} ${height}v-${(r[4] / vm * volume).toFixed(0)}h${(bw * .7).toFixed(0)}v${(r[4] / vm * volume).toFixed(0)}z`; });
-  const bandRect = band ? `<path class=band d="M0 ${y(band[1]).toFixed(0)}H${w}V${y(band[0]).toFixed(0)}H0z" fill="var(--ok-s)" stroke="var(--ok-b)"/>` : '';
-  return `<svg class=chart viewBox="0 0 ${w} ${height}" preserveAspectRatio=none aria-hidden=true>${bandRect}<path d="${vol}" fill="var(--n3)"/><path d="${uw}" stroke="var(--ok-f)"/><path d="${dw}" stroke="var(--no-f)"/><path d="${up}" fill="var(--ok-f)"/><path d="${dn}" fill="var(--no-f)"/><line class=xh y1=0 y2=${height} stroke="var(--fg3)" stroke-dasharray="4 4" visibility=hidden/></svg>`;
-};
-const lineSvg = (series, w = 1000, h = 240) => { const all = series.flatMap(s => s.pts), lo = Math.min(...all) * .97, hi = Math.max(...all) * 1.03;
-  return `<svg class=chart viewBox="0 0 ${w} ${h}" preserveAspectRatio=none aria-hidden=true>${series.map(s => line(s.pts, w, h, s.color, lo, hi)).join('')}<line class=xh y1=0 y2=${h} stroke="var(--fg3)" stroke-dasharray="4 4" visibility=hidden/></svg>`; };
 const periods = (on = 1) => seg(['1D', '7D', '30D', 'All'], on);                               // one set, everywhere, right-aligned by the header
-const head = (title, sub, right) => `<div class="row between wrap start"><div><h3>${title}</h3>${sub ? `<p class="sm muted">${sub}</p>` : ''}</div>${right}</div>`;
-const readout = (text = 'hover or focus and use ← → for values') => `<p class="readout mono xs muted" aria-live=polite>${text}</p>`;
-const hoverBox = (svg, data, ar = '1000/240') => `<div class=chartbox tabindex=0 role=group aria-label="Chart — use ← → to read values" data-hover='${JSON.stringify(data, (k, v) => typeof v === 'number' ? +v.toFixed(2) : v).replace(/'/g, '&#39;')}'${ar === '1000/240' ? '' : ` style="aspect-ratio:${ar}"`}>${svg}</div>`;
 
 // ===== round-2 blocks =====
 const LEND = [['USDC', 'cbBTC', 'Base', 86, 1.76e9, 1.59e9, 4.61, 3.99, 'Fixed · 30 Oct'], ['USDC', 'WETH', 'Ethereum', 91.5, 525.1e6, 418.3e6, 4.84, 4.12, 'Variable'], ['mUSD', 'BTC', 'Mezo', 80, 48.7e6, 31.2e6, 6.20, 5.41, 'Variable'], ['USDC', 'wstETH', 'Ethereum', 94.5, 312.4e6, 290.0e6, 4.07, 3.55, 'Fixed · 27 Nov']];
@@ -223,29 +170,6 @@ const BLOCKS = [
 
 // ---------- page ----------
 // drop gallery rules whose class selectors never appear in the rendered page (measured: 70 rules, 5.3 KB raw)
-const prune = (css, html) => css.replace(/@layer (\w+)\{([\s\S]*)\}$/, (m, name, body) => {
-  const out = []; let i = 0;
-  while (i < body.length) {
-    const b = body.indexOf('{', i); if (b < 0) break;
-    let d = 1, j = b + 1; while (j < body.length && d) { if (body[j] === '{') d++; else if (body[j] === '}') d--; j++; }
-    const sel = body.slice(i, b).trim(), rule = body.slice(i, j); i = j;
-    if (sel.startsWith('@') || !sel) { out.push(rule); continue; }                       // keep @media blocks and the like
-    const classes = [...sel.matchAll(/\.([a-zA-Z][\w-]*)/g)].map(x => x[1]);
-    if (!classes.length || classes.some(c => new RegExp(`class=["']?[^"'>]*\\b${c}\\b`).test(html))) out.push(rule);
-  }
-  return `@layer ${name}{${out.join('')}}`;
-});
-const layer = name => {                      // every @layer <name>{…} block in the gallery, concatenated
-  const out = []; let from = 0;
-  for (;;) {
-    const start = preview.indexOf(`@layer ${name}{`, from); if (start < 0) break;
-    let depth = 1, j = start + `@layer ${name}{`.length;
-    while (j < preview.length && depth) { if (preview[j] === '{') depth++; else if (preview[j] === '}') depth--; j++; }
-    out.push(preview.slice(start, j)); from = j;
-  }
-  return out.join('\n');
-};
-const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 const blockHtml = (b, n) => `<section class=block id="${b.id}">
 <div class=sec-h><span class=eyebrow>Block ${n + 1} · ${esc(b.products)}</span><h2>${esc(b.name)}</h2><p>${esc(b.why)}</p><p class="sm"><b>Constraint:</b> ${esc(b.constraint)}</p></div>
@@ -287,25 +211,7 @@ textarea.field{min-height:3.5rem;field-sizing:content;resize:vertical}
 .bar{position:fixed;inset-inline:0;bottom:0;z-index:6;background:color-mix(in srgb,var(--n0) 92%,transparent);backdrop-filter:blur(8px);border-block-start:1px solid var(--n3)}
 .bar .in{max-width:76rem;margin-inline:auto;padding:.6rem 1.25rem;display:flex;gap:.75rem;align-items:center;flex-wrap:wrap}
 /* composites used by the variants */
-.table{width:100%;border-collapse:collapse;font-size:.8125rem;line-height:1.3}.table th,.table td{padding:.45rem .6rem;border-block-end:1px solid var(--n3);white-space:nowrap;vertical-align:middle;height:2.75rem}.table th{text-align:left;font-size:.6875rem;font-weight:650;text-transform:uppercase;letter-spacing:.1em;color:var(--fg3)}.table th.num,.table td.num{text-align:right;font-variant-numeric:tabular-nums lining-nums}.table td .tk{margin-inline-end:.4rem;vertical-align:middle}.table.tall td{height:3.9rem}.table tr.group td{background:var(--n1);height:2.2rem}.table tbody tr:last-child td{border-block-end:0}
-.spark{width:6rem;height:1.75rem;display:block}
-.rangebar{position:relative;height:.5rem;border-radius:var(--rf);background:var(--n3)}.rangebar .band{position:absolute;top:0;bottom:0;background:var(--ok-b);border-radius:var(--rf)}.rangebar .cur{position:absolute;top:-.25rem;width:2px;height:1rem;background:var(--fg);border-radius:1px;transform:translateX(-1px)}
-.book{display:flex;flex-direction:column;font-size:.8125rem}.book .row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;padding:.25rem .4rem;background:linear-gradient(to left,var(--s,var(--ac-s)) var(--w),transparent var(--w));border-radius:.25rem}.book .row[data-side=lend]{--s:var(--ok-s)}.book .row[data-side=borrow]{--s:var(--no-s)}.book .row>:last-child,.book .row>:nth-child(2){text-align:right}
-.hs{list-style:none;padding:0;margin:0;gap:.5rem;flex-wrap:wrap}.hs li{display:flex;align-items:center;gap:.5rem;color:var(--fg3)}.hs .n{width:1.6rem;height:1.6rem;border-radius:var(--rf);border:1px solid var(--n3);display:grid;place-items:center;font-size:.7rem;font-weight:700;background:var(--n0)}.hs [data-s=done] .n{background:var(--ok-s);border-color:var(--ok-b);color:var(--ok-f)}.hs [data-s=now] .n{background:var(--ac-s);border-color:var(--ac-b);color:var(--ac-f);box-shadow:0 0 0 3px var(--ac-r)}.hs [data-s] .t{color:var(--fg);font-weight:600}
-.net{width:1rem;height:1rem;fill:var(--fg3);display:inline-block;vertical-align:middle}td.netc{text-align:center;width:3.5rem}
-.stk{display:flex;flex-direction:column;align-items:flex-end;gap:.2rem;white-space:nowrap}
-.posrows{display:grid;grid-template-columns:auto 1fr auto auto auto auto;gap:.6rem 1rem;align-items:center}.posrows .prow{display:contents}.posrows .prow>*{white-space:nowrap}
-@media(max-width:48rem){.posrows{grid-template-columns:auto 1fr auto}.posrows .prow>.num,.posrows .prow>.delta{grid-column:2;justify-self:start}}
-@media(max-width:60rem){.variant .grid-4,.variant .grid-2{grid-template-columns:1fr 1fr}}
-.readout{min-height:1.25em;min-height:1lh;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.row>.readout{flex:1 1 auto;text-align:end}
-.chartbox .xh{opacity:1}
-.btn[aria-pressed=true]{background:var(--ac-s);color:var(--ac-f);box-shadow:inset 0 0 0 1px var(--ac-b)}
-.variant h2,.variant h3{margin:0}.narrow{max-width:24rem}.narrower{max-width:22rem}.tight{gap:.4rem}.tighter{gap:.25rem}.loose{gap:1rem}.looser{gap:1.5rem}.loosest{gap:2rem}.start{align-items:flex-start}.end{align-items:flex-end}.baseline{align-items:baseline}.num.lg{font-size:1.25rem}.spark.wide{width:100%;height:2rem}
-.you{color:var(--fg)}           /* the middle label of a bar: where you are, at body colour */
-.pickrow{width:100%;text-align:left;padding:.5rem .25rem;border-radius:var(--r1)}.pickrow[aria-pressed=true]{background:var(--ac-s)}
-.net-lbl{display:inline-flex;align-items:center;gap:.3rem;font-size:.75rem;color:var(--fg2)}
-.legend i{background:var(--k,var(--fg3))}
-.pill.acct{gap:.4rem;padding:.25rem .5rem .25rem .25rem;border:1px solid var(--b,var(--n3));background:var(--s,var(--n0))}.chartbox{position:relative;cursor:crosshair;touch-action:pan-y;aspect-ratio:1000/240}.chartbox:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+${COMPOSITES}
 .outpanel{position:fixed;inset-inline:0;bottom:3.5rem;z-index:6;max-width:76rem;margin-inline:auto;padding:.75rem 1.25rem;background:var(--n0);border:1px solid var(--n3);border-radius:var(--r3) var(--r3) 0 0;box-shadow:var(--sh);display:flex;flex-direction:column;gap:.5rem}
 .outpanel textarea{width:100%;min-height:11rem;font-family:var(--fm);font-size:.75rem;line-height:1.4}
 }
@@ -313,7 +219,7 @@ textarea.field{min-height:3.5rem;field-sizing:content;resize:vertical}
 
 <header class=top><div class=in>
 <div class=brand>μi <span>blocks</span></div>
-<nav aria-label="Site"><a href="../">Design language</a><a href="../paper/">The paper</a><a href="../app/">μApp demo ↗</a></nav>
+<nav aria-label="Site"><a href="../">Design language</a><a href="../paper/">The paper</a><a href="../pairs-pro/">Pairs Pro</a><a href="../app/">μApp demo ↗</a></nav>
 <div class=seg role=group aria-label=Density style="margin-inline-start:auto"><button data-den=base aria-pressed=true>Base</button><button data-den=sharp>Sharp</button></div>
 <div class=seg role=group aria-label=Luminance><button data-lum=light aria-pressed=true>Light</button><button data-lum=dark>Dark</button></div>
 </div></header>
