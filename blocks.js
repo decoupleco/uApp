@@ -120,7 +120,7 @@ const POSITION_BLOCK = { id: 'position', name: 'Position card', products: 'PegCo
     { name: 'Borrow — bar at bottom', note: 'Round 2: identical content with the bar after the rows, so the numbers lead and the risk read closes the card.', html: posCard({ a: 'cbBTC', b: 'USDC', kind: 'Borrow · Base', kind2: 'Due in 13 d', status: 'Fixed · 30 Oct', bar: healthBar(), rows: [['Collateral', '0.50 cbBTC · $54,210'], ['Debt', '28,000 USDC'], ['Borrow rate', '<b>4.61%</b> fixed · accrued $89.41']], actions: ['Repay', 'Add collateral'], barPos: 'bottom' }) },
     { name: 'Liquidity (CL) — same skeleton', note: 'Round 2: the range bar has the same three labels as the health bar (min · spot · max); "Earned" is one row with the same semantics as accrued.', html: posCard({ a: 'WETH', b: 'USDC', kind: 'Liquidity · 0.05% · Mezo', kind2: 'since 14 Oct', status: 'In range', bar: rangeBarFull(), rows: [['Liquidity', '1.00 WETH + 2,431 USDC · $4,862'], ['Fee APR', '<b>12.4%</b> 7d'], ['Earned', '0.0041 WETH + 9.81 USDC · $31.20']], actions: ['Collect', 'Adjust range'] }) },
     { name: 'Fixed lend — same skeleton', note: 'Round 2: the term bar has the same three labels (filled · left · matures); lend rate and earned read exactly like the borrow card.', html: posCard({ a: 'USDC', b: 'WETH', kind: 'Lend · Ethereum', kind2: 'Due in 13 d', status: 'Fixed · 30 Oct', bar: termBar(), rows: [['Lent', '50,000 USDC'], ['Lend rate', '<b>4.61%</b> fixed'], ['Earned', '<b>+$89.41</b> · auto-renew on']], actions: ['Set renewal', 'Withdraw at maturity'] }) },
-    { name: 'Compact rows — aligned', note: 'Round 2: a grid, not a flex row, so pairs, sizes, PnL, health and actions sit in columns across rows.', html: `<div class="card posrows">${[['cbBTC', 'USDC', 'Borrow · Base', '28,000 USDC', '+$412', 'up', 'ok', '1.41'], ['WETH', 'USDC', 'LP 0.05% · Mezo', '$4,862', '−$38', 'down', 'wa', 'near edge'], ['mUSD', 'BTC', 'Pair · Mezo', '$12,000', '+$1,204', 'up', 'no', 'at risk']].map(([a, b, k, size, pnl, d, v, h]) => `<div class=prow>${tk(a, b)}<div><b>${a} / ${b}</b><div class="xs muted">${k}</div></div><span class=num>${size}</span><span class="delta sm" data-d=${d}>${pnl}</span><span class="pill sm" data-v=${v}>${h}</span><button class="btn sm">Manage</button></div>`).join('')}</div>` },
+    { name: 'Compact rows — aligned', span: true, note: 'Round 2: a grid, not a flex row, so pairs, sizes, PnL, health and actions sit in columns across rows.', html: `<div class="card posrows">${[['cbBTC', 'USDC', 'Borrow · Base', '28,000 USDC', '+$412', 'up', 'ok', '1.41'], ['WETH', 'USDC', 'LP 0.05% · Mezo', '$4,862', '−$38', 'down', 'wa', 'near edge'], ['mUSD', 'BTC', 'Pair · Mezo', '$12,000', '+$1,204', 'up', 'no', 'at risk']].map(([a, b, k, size, pnl, d, v, h]) => `<div class=prow>${tk(a, b)}<div><b>${a} / ${b}</b><div class="xs muted">${k}</div></div><span class=num>${size}</span><span class="delta sm" data-d=${d}>${pnl}</span><span class="pill sm" data-v=${v}>${h}</span><button class="btn sm">Manage</button></div>`).join('')}</div>` },
   ] };
 
 const CHART_BLOCK = { id: 'chart', name: 'Chart card', products: 'price · rate · performance — every product',
@@ -230,7 +230,7 @@ const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&
 
 const blockHtml = (b, n) => `<section class=block id="${b.id}">
 <div class=sec-h><span class=eyebrow>Block ${n + 1} · ${esc(b.products)}</span><h2>${esc(b.name)}</h2><p>${esc(b.why)}</p><p class="sm"><b>Constraint:</b> ${esc(b.constraint)}</p></div>
-<div class="variants${b.wide ? ' wide' : ''}">${b.variants.map((v, i) => `<article class=variant data-block="${b.id}" data-variant="${i}">
+<div class="variants${b.wide ? ' wide' : ''}">${b.variants.map((v, i) => `<article class="variant${v.span ? ' span' : ''}" data-block="${b.id}" data-variant="${i}">
 <header class="row between wrap"><label class="check sm"><input type=radio name="pick-${b.id}" value="${i}"> <b>${String.fromCharCode(65 + i)} · ${esc(v.name)}</b></label>${b.agent.pick === i ? `<span class="pill sm" data-v=ac title="${esc(b.agent.reason)}">agent pick</span>` : ''}</header>
 <div class=stage>${v.html}</div>
 <p class="xs muted">${esc(v.note)}</p>
@@ -258,6 +258,7 @@ ${['reset', 'theme', 'base', 'comp', 'chart'].map(layer).join('\n')}
 .variant{border:1px solid var(--n3);border-radius:var(--r3);background:var(--n0);display:flex;flex-direction:column;gap:.75rem;padding:.75rem;min-width:0}
 .variant:has(> header input[type=radio]:checked){border-color:var(--ac);box-shadow:0 0 0 3px var(--ac-r)}
 .variant header{gap:.5rem}
+.variant.span{grid-column:1/-1}
 .stage{background:var(--n1);border-radius:var(--r2);padding:1rem;overflow:auto;min-width:0}
 .stage>*{min-width:0}
 .agent summary{cursor:pointer;color:var(--fg3)}
