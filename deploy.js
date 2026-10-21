@@ -24,8 +24,9 @@ run(['bun', './pairs-pro.js']);
 
 rmSync(WT, { recursive: true, force: true });
 run(['git', 'clone', '--depth', '1', '--branch', 'gh-pages', REPO, WT]);
-rmSync(`${WT}/design`, { recursive: true, force: true });
-for (const d of ['app', 'paper', 'blocks', 'pairs-pro']) mkdirSync(`${WT}/design/${d}`, { recursive: true });
+// replace only the folders this script renders; other folders under design/ (e.g. pairs-pro-studies, published from
+// the pairs-pro repo) stay as they are
+for (const d of ['app', 'paper', 'blocks', 'pairs-pro']) { rmSync(`${WT}/design/${d}`, { recursive: true, force: true }); mkdirSync(`${WT}/design/${d}`, { recursive: true }); }
 run(['cp', 'preview.html', `${WT}/design/index.html`]);
 run(['cp', 'paper.html', `${WT}/design/paper/index.html`]);
 run(['cp', 'blocks.html', `${WT}/design/blocks/index.html`]);
